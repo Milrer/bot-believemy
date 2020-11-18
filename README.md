@@ -1,4 +1,4 @@
-# bot-believemy
-Le bot officiel de la communauté Discord BELIEVEMY
+# Believemy
+✔️ Le bot officiel de la communauté Discord __BELIEVEMY__
 
-Rejoindre le serveur Discord : [Rejoindre](https://discord.gg/5YBwzadbDN)
+🔗 Rejoindre le serveur __Discord__ : [Rejoindre](https://discord.gg/5YBwzadbDN)
