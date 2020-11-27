@@ -1,0 +1,7 @@
+// POUR CRÉER UN EVENT, IL FAUT CRÉER UN FICHIER DANS CE DOSSIER ET EN NOM, LE NOM DE L'EVENT (ex: message.js)
+// ENSUITE IL FAUT CODER DANS LE BLOCK "MODULE.EXPORTS"
+
+                //↓ ICI LES IMPORT (ex: message / member)
+module.exports = (client) => {
+    // ET C'EST ICI QU'ON CODE ! :)
+}
