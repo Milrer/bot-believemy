@@ -4,6 +4,7 @@ const logger = require("./Config/logger");
 const token = require("./Config/token.js").token;
 const client = new Discord.Client();
 const config = require("./Config/config.js");
+client.prefix = config.prefix;
 
 client.login(token).then(logger.log(`Bon démarré`, 'log'));
 
