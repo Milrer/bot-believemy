@@ -5,5 +5,6 @@ module.exports = {
             type: "PLAYING"
         }
     ],
-    fullLog: true
+    fullLog: true,
+    prefix: '/'
 }
