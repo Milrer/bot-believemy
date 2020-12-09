@@ -1,0 +1,370 @@
+body{
+    background-color: #F9FBFD;
+}
+
+*{
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+    /* border: 1px solid black; */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    
+}
+
+header{
+    /* height:35em; */
+    padding: 5%;
+    background-image:url('backgroundHeader.png') ;
+    /* background-size: auto; */
+    /* background-repeat: no-repeat; */
+    justify-content: center;
+    text-align: center;
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-position:top left;
+    position: relative;
+    
+    
+}
+.discord{
+    display:flex;  
+    flex-direction: column;
+    padding: auto;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    background:none;
+    
+}
+
+.discord  h2:first-of-type{
+    display: block;
+    align-self: center;
+    font-size: 1.8em;
+    letter-spacing: .1em;
+    color: white;
+
+}
+.discord img{
+    width: 50%;
+}
+
+.color{
+    display: block  ;
+    background-image: url('color.png');
+    height: 28px; 
+}
+
+section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 1700px;
+    margin: 30px 0px;
+}
+
+#botDiscord, #openSource , #communauté{
+    display: flex; 
+    justify-content: space-between;
+    width: 70%;
+    /* flex-wrap: wrap */
+}
+
+#openSource{
+    flex-direction: row-reverse;
+    
+}
+
+.botDiscord_item, .openSource_item , .communauté_item {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding-top: 3%;
+}
+
+
+.openSource_item  {
+    
+    padding-left: 10%;
+    align-items: flex-end;
+}
+
+.openSource_item h2 {
+    
+    padding-left: 20%;
+}
+
+.communaute_item p {
+    display: block;    
+}
+
+
+
+/* .botDiscord_img, .openSource_img , .communauté_img {
+    padding-left: auto;
+    padding-right: auto
+} */
+
+
+section  img{
+ 
+    width: 140%;
+    background-size: cover; 
+    background-position: center;
+}
+
+section p {
+    display: inline;
+    text-align: justify;
+    width: 60%;
+    font-size: 1.3em;    
+}
+
+section h2 {
+    display: inline-block;
+    width: 80%;
+    font-size: 2.5em;
+    margin-bottom: 1em;
+}
+
+#equipe{
+    display: flex;
+    flex-direction: column; 
+}
+
+#equipe h2{
+    display: inline;
+    align-self: center;
+    margin: auto ;
+    margin-bottom:5% ;
+    font-size: 2.8em;
+    
+}
+
+#equipe ul{
+    align-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-between;
+}
+
+#equipe li{
+    list-style: none;
+    margin: 5% 5%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+#equipe li h2{
+    display: inline;
+    align-items: center;
+    font-size: 1.5em;
+}
+
+#equipe li img{
+    border-radius: 1000px;
+    max-width: 190px;
+}
+
+#equipe li lien{
+    align-items: center;
+    margin: auto;
+    justify-content: space-between;
+}
+
+.lien {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lien_icon {
+
+    padding: 0px 25px;
+}
+
+i{
+  width: 30%;
+  height: 120%;
+  margin: auto;
+}
+
+#nousRejoindre{
+    padding: 10%;
+    background-image: url('backgroundButton.png');
+    height:783px ;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#nousRejoindre H2, #nousRejoindre H3{
+    display: block;
+    margin: 10px auto ;
+    font-size: 2.1em;
+    color: white;
+    letter-spacing: .3em;
+    margin: 2%;
+}
+
+#nousRejoindre H3{
+    font-size: 2.3em;
+}
+
+.btnNousRejoindre a{
+    color: black;
+    text-decoration: none;
+    font-size: 2.1em;
+    size: 100%;
+    
+}
+
+.btnNousRejoindre{
+    margin:3% ;
+    display: block;
+    align-self: center;
+    color: black;
+    padding: 30px  ;
+    width: 60%;
+    background-color: white;
+    border: 10px solid rgba(163, 161, 161, 0.89) ;
+    border-radius: 30px;
+    margin-bottom: 2%;
+    font-size: 1.2em;
+
+
+}
+#nousRejoindre p{
+    font-size: .8em;
+}
+
+
+footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 60px 250px;
+    font-size: 1em;
+
+}
+
+footer a{
+    color: black;
+    text-decoration: none;
+}
+
+footer h2{
+    margin-bottom:4% ;
+    font-size: 1.3em;   
+}
+
+footer a:hover{
+    color: silver;
+}
+
+footer li{
+    list-style: none;
+    padding: 6px;
+}
+
+footer.logo{
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+
+    overflow: hidden;
+}
+
+footer.logo span{
+    display: inline;
+    width: 100%;
+}
+
+
+@media all and (max-width: 1352px) {
+
+    section{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 1700px;
+        margin: 400px 0px;
+    }
+
+    
+    #botDiscord, #openSource , #communauté{
+        display: flex; 
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+        
+    }
+    
+    .botDiscord_item, .openSource_item , .communauté_item {
+        display: center;
+        flex-direction: center;
+        align-items: center;
+        padding-top: 3%;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    
+
+    section  img{
+ 
+        width: 70%;
+        background-size: cover; 
+        background-position: center;
+        padding: 100px 0;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    section h2 {
+        display: block;
+        text-align: center;
+        width: 100%;
+        font-size: 2.5em;
+        margin-bottom: 1em;
+    }
+
+    .openSource_item  {
+        padding: 0%;
+        align-items: center;
+    }
+
+    .openSource_item h2 {
+          padding: 0;
+    }
+
+    .communaute_item p {
+           margin: auto;  
+        
+    }
+
+    #equipe li{
+        list-style: none;
+        margin: 5% 35%;
+        display: flex;
+        flex-direction: column;
+    
+    }
+
+    #equipe li img{
+        border-radius: 1000px;
+        max-width: 400px;
+    }
+
+    #nousRejoindre{
+        padding-top: 15%;
+        
+    }
+
+}
