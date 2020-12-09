@@ -80,7 +80,14 @@ let users = [
     "https://twitter.com/HellsWolf1",
     "fab fa-twitter",
   ],
-
+  [
+    "Sckyzo'Pat",
+    "style/Profile/Sckyzo'Pat.jpg",
+    "https://github.com/MariannePiquetNowak",
+    "fab fa-github",
+    "https://www.reddit.com/user/Sckyzopat",
+    "fab fa-reddit",
+  ],
 ];
 
 // Création des variables 
