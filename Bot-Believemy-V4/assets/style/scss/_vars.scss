@@ -1,0 +1,27 @@
+//variables
+$background: #F9FBFD;
+$dark: #000000;
+$light: #FFFFFF;
+$discord-color: #738BD8;
+$believemy-color: #FC7A3D;
+$opensource-color: #FC7A3D;
+$github-color: #8C318A;
+$community-color: #F9AB30;
+
+body{
+    .discord-color{
+        color: $discord-color;
+    }
+    .believemy-color{
+        color: $believemy-color;
+    }
+    .opensource-color{
+        color: $opensource-color;
+    }
+    .github-color{
+        color: $github-color;
+    }
+    .community-color{
+        color: $community-color;
+    }
+}

@@ -1,0 +1,371 @@
+@import "vars"; //importation des variables
+
+body{
+    //initialisation
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: 0;
+    background-color: $background;
+
+    //police d'écriture
+    font-family: 'Montserrat', sans-serif;
+}
+
+main{
+    //taile du main
+    height: 50vh;
+    width: 100%;
+
+    //centrer le contenu sur l'axe y
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    //background & position
+    position: relative;
+    background-image: url(../../img/discord-background.png);
+    background-size: cover;
+    background-position-y: bottom;
+
+    @media screen and (max-width: 1140px){
+        height: 40vh;
+    }
+
+    #discord-logo{
+        //emplacement du logo discord
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+
+        @media screen and (max-width: 1140px){
+            max-width: 70%;
+        }
+    }
+
+    h1{
+        text-align: center;
+        color: $light;
+        text-shadow: 0px 3px 6px rgba(0,0,0,0.26);
+        font-size: 2.5em;
+
+        @media screen and (max-width: 1140px){
+            font-size: 2em;
+            margin-left: 5vw;
+            margin-right: 5vw;
+        }
+    }
+
+    #separation-line{
+        //emplacement en bas du main
+        position: absolute;
+        bottom: 0;
+
+        //taille
+        width: 100%;
+        max-height: 3vh;
+        min-height: 2vh;
+    }
+}
+
+#project-description{
+    .hidden{
+        display: none;
+    }
+
+    #project-grid{
+        //mise en place de la grille CSS
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-column-gap: 2%;
+        grid-row-gap: 5vh;
+        align-items: center;
+        margin-right: 10vw;
+        margin-left: 10vw;
+        margin-top: 5vh;
+
+        @media screen and (max-width: 1140px){
+            //réorganisation des images et des textes
+            display: flex;
+            flex-direction: column;
+                
+            #one{
+                order: 1;
+            }
+            #two{
+                order: 2;
+            }
+            #three{
+                order: 3;
+            }
+            #four{
+                order: 4;
+            }
+            #five{
+                order: 5;
+            }
+            #six{
+                order: 6;
+            }
+        }
+
+        .grid-text-left{
+            //mise en place du texte à gauche
+            grid-column-start: 1;
+            grid-column-end: span 6;
+
+            h2{
+                color: $dark;
+                font-size: 1.8em;
+                margin: 0px;
+                font-weight: 600;
+            }
+
+            h3{
+                font-size: 3em;
+                margin: 0px;
+                font-weight: 600;
+
+                @media screen and (max-width: 1140px){
+                    font-size: 2.1em;
+                }
+
+                span{
+                    font-weight: 700;
+                }
+            }
+
+            p{
+                font-size: 1.3em;
+                font-weight: 500;
+                text-align: justify;
+                line-height: 1.5em;
+
+                span{
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .grid-img-right{
+            //mise en place de l'image à droite
+            grid-column-start: 8;
+            grid-column-end: span 5;
+
+            img{
+                display: block;
+                margin-right: 0px;
+                margin-left: auto;
+                max-width: 100%;
+            }
+        }
+
+        .grid-img-left{
+            //mise en place de l'image à gauche
+            grid-column-start: 1;
+            grid-column-end: span 5;
+
+            img{
+                display: block;
+                margin-left: 0px;
+                margin-right: auto;
+                max-width: 100%;
+            }
+        }
+
+        .grid-text-right{
+            //mise en place du texte à droite
+            grid-column-start: 7;
+            grid-column-end: span 6;
+
+            h2{
+                color: $dark;
+                font-size: 1.8em;
+                margin: 0px;
+                font-weight: 600;
+            }
+
+            h3{
+                font-size: 3em;
+                margin: 0px;
+                font-weight: 600;
+                
+                @media screen and (max-width: 1140px){
+                    font-size: 2.1em;
+                }
+
+                span{
+                    font-weight: 700;
+                }
+            }
+
+            p{
+                font-size: 1.3em;
+                font-weight: 500;
+                text-align: justify;
+                line-height: 1.5em;
+
+                span{
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}
+
+#team{
+    margin-right: 10vw;
+    margin-left: 10vw;
+    margin-bottom: 10vh;
+
+    h2{
+        text-align: center;
+        font-size: 2.5em;
+        font-weight: 600;
+        margin-top: 10vh;
+        margin-bottom: 10vh;
+
+        @media screen and (max-width: 1140px){
+            font-size: 2em;
+        }
+    }
+
+    #team-pictures{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+
+        @media screen and (max-width: 1140px){
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .team-card{
+            width: 25%;
+            margin-bottom: 5vh;
+            @media screen and (max-width: 1140px){
+                width: 100%;
+            }
+
+            .profiles-pictures{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 180px;
+                border-radius: 100%;
+            }
+
+            h4{
+                text-align: center;
+                font-size: 1.3em;
+                font-weight: 500;
+                margin-top: 25px;
+                margin-bottom: 10px;
+            }
+
+            .team-buttons{
+                display: flex;
+                justify-content: space-around;
+                margin-right: 40%;
+                margin-left: 40%;
+
+                a{
+                    margin-left: 10px;
+                    margin-right: 10px;
+
+                    transition: 0.5s;
+                    
+                    &:hover{
+                        opacity: 0.5;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#join-us{
+    height: 70vh;
+    background-image: url(../../img/wave.png);
+    background-size: cover;
+
+    h2{
+        text-align: center;
+        padding-top: 20vh;
+        color: $light;
+        font-weight: 600;
+        font-size: 3.5em;
+        margin-bottom: 0px;
+
+        @media screen and (max-width: 1140px){
+            font-size: 2.5em;
+            padding-top: 17.5vh;
+        }
+
+        span{
+            font-weight: 700;
+        }
+    }
+
+    h3{
+        text-align: center;
+        color: $light;
+        font-weight: 500;
+        font-size: 3em;
+        margin-top: 0px;
+
+        @media screen and (max-width: 1140px){
+            font-size: 1.8em;
+        }
+    }
+
+    #button{
+        display: flex;
+        justify-content: center;
+
+        span{
+            border: 5px solid rgba(255, 255, 255, .5);
+            border-radius: 30px;
+            padding: 25px 0px;
+
+            @media screen and (max-width: 1140px){
+                padding: 20px 0px;
+            }
+
+            a{
+                text-decoration: none;
+                color: $dark;
+                font-size: 2em;
+                font-weight: 600;
+                background-color: $light;
+                padding: 25px 100px;
+                border-radius: 25px;
+
+                transition: 0.2s;
+
+                &:hover{
+                    opacity: 0.8;
+                }
+
+                @media screen and (max-width: 1140px){
+                    font-size: 1.3em;
+                    padding: 20px 75px;
+                }
+            }
+        }
+    }
+
+    p{
+        text-align: center;
+        color: $light;
+        margin-top: 3vh;
+        font-weight: 500;
+        font-style: italic;
+        opacity: 0.8;
+        margin-right: 5vw;
+        margin-left: 5vw;
+    }
+}
+
+@import "fonts" //importation des polices d'écritures
