@@ -70,8 +70,10 @@ main{
 }
 
 #project-description{
-    .hidden{
-        display: none;
+    @media screen and (max-width: 1140px){
+        .hidden{
+            display: none;
+        }
     }
 
     #project-grid{
