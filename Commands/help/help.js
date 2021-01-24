@@ -19,5 +19,6 @@ Je suis encore en **élaboration** par mes créateurs, mes facultés ne sont pas
 
 module.exports.help = {
     name: 'help', // LE NOM DE LA COMMANDE
-    // ex : commande
+    // ex : commande,
+    aliases: ['aide']
 }

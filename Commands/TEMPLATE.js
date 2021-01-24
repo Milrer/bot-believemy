@@ -12,4 +12,6 @@ module.exports.run = (client, message, args) => {
 module.exports.help = {
     name: "", // LE NOM DE LA COMMANDE
     // ex : commande
+    aliases: [""] // LES ALTERNATIVE
+    // ex : cmd
 }
