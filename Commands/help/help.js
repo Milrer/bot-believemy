@@ -9,7 +9,7 @@ BeBot, pour vous servir.
 Je suis encore en **élaboration** par mes créateurs, mes facultés ne sont pas encore toutes au point.
         `)
         .setColor('613bdb')
-        .setTitle('Commandes')
+        .setTitle('Liste des commandes disponibles ')
         .addField('!youtube', 'Affiche la chaîne YouTube', true)
         .addField('!count', 'Affiche le nombre de membres sur le salon', true);
     
