@@ -10,5 +10,6 @@ module.exports.run = (client, message, args) => {
 module.exports.help = {
     name: 'count', // LE NOM DE LA COMMANDE
     // ex : commande
-    aliases: ['users-count', 'members-count']
+    aliases: ['users-count', 'members-count'],
+    description: 'Affiche le nombre d\'utilisateurs sur le serveur'
 }

@@ -8,5 +8,6 @@ module.exports.run = (client, message, args) => {
 
 module.exports.help = {
     name: 'github',
-    aliases: ['repo']
+    aliases: ['repo'],
+    description: 'Donne le repo du bot'
 }

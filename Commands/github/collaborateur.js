@@ -30,5 +30,6 @@ module.exports.run = (client, message, args) => {
 
 module.exports.help = {
     name: 'collaborateur',
-    aliases: ['collab', 'collaborator']
+    aliases: ['collab', 'collaborator'],
+    description: 'Affiche la liste des bg qui ont fait le bot'
 }
