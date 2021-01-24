@@ -11,9 +11,9 @@ client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 
 fs.readdirSync("./Commands/").forEach(dir => {
-    const commands = fs.readdirSync(`./commands/${dir}/`).filter(file => file.endsWith(".js"));
+    const commands = fs.readdirSync(`./Commands/${dir}/`).filter(file => file.endsWith(".js"));
     for (let file of commands) {
-        let pull = require(`./commands/${dir}/${file}`);
+        let pull = require(`./Commands/${dir}/${file}`);
         if (pull.help.name) {
             client.commands.set(pull.help.name, pull);
             logger.log(`La commande ${pull.help.name} a bien été chargée`, 'ready')
