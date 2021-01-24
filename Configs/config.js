@@ -1,10 +1,10 @@
 module.exports = {
     status: [
         {
-            name: "📋 Believemy",
+            name: "!help - believemy.com",
             type: "PLAYING"
         }
     ],
     fullLog: true,
-    prefix: '/'
+    prefix: '!'
 }

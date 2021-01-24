@@ -1,9 +1,9 @@
 const Discord = require('discord.js');
-const logger = require("../Config/logger");
+const logger = require("../Configs/logger");
 
 
   module.exports = (client) => {
-    const status = require("../Config/config.js").status;
+    const status = require("../Configs/config.js").status;
     let i = 0;
     setInterval(function(){
         client.user.setActivity(status[parseInt(i, 10)].name, {type: status[parseInt(i, 10)].type, url: status[parseInt(i, 10)].url});

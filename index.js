@@ -1,27 +1,25 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const logger = require("./Config/logger");
-const token = require("./Config/token.js").token;
+const logger = require("./Configs/logger");
+const TOKEN = require("./Configs/token.js").token;
 const client = new Discord.Client();
-const config = require("./Config/config.js");
+const config = require("./Configs/config.js");
 client.prefix = config.prefix;
 
-client.login(token).then(logger.log(`Bon démarré`, 'log'));
+client.login(TOKEN).then(logger.log(`Bot démarré`, 'log'));
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
-
 
 fs.readdirSync("./Commands/").forEach(dir => {
     const commands = fs.readdirSync(`./commands/${dir}/`).filter(file => file.endsWith(".js"));
     for (let file of commands) {
         let pull = require(`./commands/${dir}/${file}`);
-
         if (pull.help.name) {
             client.commands.set(pull.help.name, pull);
-            logger.log(`La commande ${pull.help.name} à bien été chagée`, 'ready')
+            logger.log(`La commande ${pull.help.name} a bien été chargée`, 'ready')
         } else {
-            logger.log(`La commande ${file} n'es pas chargée, il dois manquer une info dans le module 'help'`, 'error')
+            logger.log(`La commande ${file} n'est pas chargée, il doit manquer une info dans le module 'help'`, 'error')
         }
         if (pull.help.aliases){
             pull.help.aliases.forEach(alias => {
