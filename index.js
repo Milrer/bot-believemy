@@ -4,7 +4,13 @@ const logger = require("./Configs/logger");
 const client = new Discord.Client();
 const config = require("./Configs/config.js");
 client.prefix = config.prefix;
-const token = require('./Configs/token').token;
+let token;
+
+if(process.env && process.env.token){
+    token = process.env.token;
+} else {
+    token = require('./Configs/token').token;
+}
 
 client.login(token).then(logger.log(`Bot démarré`, 'log'));
 
