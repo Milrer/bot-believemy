@@ -23,7 +23,10 @@ client.login(token).then(logger.log(`Bot démarré`, "log"));
 //   channel.send(quoteArray[0]);
 // });
 cron.schedule("* * * * *", function () {
-  console.log("running a task every minute");
+  const guild = client.guilds.cache.get(process.env.guild_id);
+  let channel = guild.channels.get("770587361058488340");
+  let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
+  channel.send(quoteArray[0]);
 });
 
 // When you want to start it, use:
