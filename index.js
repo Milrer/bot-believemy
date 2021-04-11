@@ -6,7 +6,7 @@ const config = require("./Configs/config.js");
 client.prefix = config.prefix;
 let token;
 const cron = require("node-cron");
-const quotesArray = "./src/quotes.js";
+const quotesArray = require("./src/quotes.js");
 
 if (process.env && process.env.token) {
   token = process.env.token;
@@ -28,9 +28,14 @@ cron.schedule("*/5 * * * *", function () {
   };
   date = date.toLocaleDateString("fr-FR", options);
   const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
-  channel.send(
-    `Nous sommes le ${date}\n\n *${quote.citation}* - ${quote.nom} `,
-  );
+  const embed = new Discord.MessageEmbed();
+  embed
+    .setAuthor("BeBot", "https://believemy.com/pictures/brand/favicon_1000.png")
+    .setDescription(`${quote.citation}`)
+    .setColor("613bdb")
+    .setTitle(`Nous sommes le ${date}`)
+    .setFooter(`${quote.nom} @ ${date.getFullYear()}`, quote.image);
+  channel.send(embed);
 });
 
 client.commands = new Discord.Collection();
