@@ -27,7 +27,7 @@ cron.schedule("* * * * *", function () {
 });
 
 // When you want to start it, use:
-scheduledMessage.start();
+// scheduledMessage.start();
 // You could also make a command to pause and resume the job
 
 client.commands = new Discord.Collection();
