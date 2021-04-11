@@ -17,7 +17,7 @@ if (process.env && process.env.token) {
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
 // Citation quotidienne du matin
-cron.schedule("*/1 * * * *", function () {
+cron.schedule("45 7 * * *", function () {
   let channel = client.channels.cache.get("770587361058488340");
   let date = new Date();
   const options = {
