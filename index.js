@@ -17,7 +17,7 @@ if (process.env && process.env.token) {
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
 // Citation quotidienne du matin
-cron.schedule("*/5 * * * *", function () {
+cron.schedule("*/1 * * * *", function () {
   let channel = client.channels.cache.get("770587361058488340");
   let date = new Date();
   const options = {
@@ -34,7 +34,7 @@ cron.schedule("*/5 * * * *", function () {
     .setDescription(`${quote.citation}`)
     .setColor("613bdb")
     .setTitle(`Nous sommes le ${date}`)
-    .setFooter(`${quote.nom} @ ${date.getFullYear()}`, quote.image);
+    .setFooter(`${quote.nom}`, quote.image);
   channel.send(embed);
 });
 
