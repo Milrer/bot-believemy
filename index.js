@@ -33,7 +33,8 @@ cron.schedule("*/5 * * * *", function () {
     day: "2-digit",
   };
   date = date.toLocaleDateString("fr-FR", options);
-  channel.send(`Nous sommes le ${date} - ${quoteArray[0]}`);
+  const quote = quoteArray[Math.floor(Math.random() * quoteArray.length)];
+  channel.send(`Nous sommes le ${date} - ${quote}`);
 });
 
 // When you want to start it, use:
