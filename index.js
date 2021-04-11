@@ -6,6 +6,7 @@ const config = require("./Configs/config.js");
 client.prefix = config.prefix;
 let token;
 const cron = require("node-cron");
+const quotesArray = "./src/quotes.js";
 
 if (process.env && process.env.token) {
   token = process.env.token;
@@ -15,16 +16,9 @@ if (process.env && process.env.token) {
 
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
-// let scheduledMessage = new cron.CronJob("* * * * *", () => {
-//   // This runs every day at 10:30:00, you can do anything you want
-//   const guild = client.guilds.cache.get(process.env.guild_id);
-//   let channel = guild.channels.get("770587361058488340");
-//   let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
-//   channel.send(quoteArray[0]);
-// });
+// Citation quotidienne du matin
 cron.schedule("*/5 * * * *", function () {
   let channel = client.channels.cache.get("770587361058488340");
-  let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
   let date = new Date();
   const options = {
     weekday: "long",
@@ -33,13 +27,11 @@ cron.schedule("*/5 * * * *", function () {
     day: "2-digit",
   };
   date = date.toLocaleDateString("fr-FR", options);
-  const quote = quoteArray[Math.floor(Math.random() * quoteArray.length)];
-  channel.send(`Nous sommes le ${date} - ${quote}`);
+  const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
+  channel.send(
+    `Nous sommes le ${date}\n\n *${quote.citation}* - ${quote.nom} `,
+  );
 });
-
-// When you want to start it, use:
-// scheduledMessage.start();
-// You could also make a command to pause and resume the job
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
