@@ -22,7 +22,7 @@ client.login(token).then(logger.log(`Bot démarré`, "log"));
 //   let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
 //   channel.send(quoteArray[0]);
 // });
-cron.schedule("* * * * *", function () {
+cron.schedule("*/5 * * * *", function () {
   let channel = client.channels.cache.get("770587361058488340");
   let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
   let date = new Date();
