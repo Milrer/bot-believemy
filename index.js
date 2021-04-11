@@ -5,7 +5,7 @@ const client = new Discord.Client();
 const config = require("./Configs/config.js");
 client.prefix = config.prefix;
 let token;
-const cron = require("cron");
+const cron = require("node-cron");
 
 if (process.env && process.env.token) {
   token = process.env.token;
@@ -15,9 +15,15 @@ if (process.env && process.env.token) {
 
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
-let scheduledMessage = new cron.CronJob("00 13 19 * * *", () => {
-  // This runs every day at 10:30:00, you can do anything you want
-  console.log("test");
+// let scheduledMessage = new cron.CronJob("* * * * *", () => {
+//   // This runs every day at 10:30:00, you can do anything you want
+//   const guild = client.guilds.cache.get(process.env.guild_id);
+//   let channel = guild.channels.get("770587361058488340");
+//   let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
+//   channel.send(quoteArray[0]);
+// });
+cron.schedule("* * * * *", function () {
+  console.log("running a task every minute");
 });
 
 // When you want to start it, use:
