@@ -17,10 +17,7 @@ client.login(token).then(logger.log(`Bot démarré`, "log"));
 
 let scheduledMessage = new cron.CronJob("00 11 19 * * *", () => {
   // This runs every day at 10:30:00, you can do anything you want
-  const guild = client.guilds.cache.get(process.env.guild_id);
-  let channel = guild.channels.get("770587361058488340");
-  let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
-  channel.send(quoteArray[0]);
+  console.log("test");
 });
 
 // When you want to start it, use:
