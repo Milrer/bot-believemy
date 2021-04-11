@@ -25,7 +25,15 @@ client.login(token).then(logger.log(`Bot démarré`, "log"));
 cron.schedule("* * * * *", function () {
   let channel = client.channels.cache.get("770587361058488340");
   let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
-  channel.send(quoteArray[0]);
+  let date = new Date();
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  };
+  date = date.toLocaleDateString("fr-FR", options);
+  channel.send(`Nous sommes le ${date} - ${quoteArray[0]}`);
 });
 
 // When you want to start it, use:
