@@ -41,5 +41,5 @@ module.exports.run = (client, message, args) => {
 module.exports.help = {
   name: "collaborateur",
   aliases: ["collab", "collaborator"],
-  description: "Affiche la liste des collaborateurs qui ont élaboré le BeBot",
+  description: "Affiche la liste des collaborateurs qui ont élaboré BeBot",
 };
