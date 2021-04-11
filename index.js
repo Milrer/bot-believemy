@@ -15,7 +15,7 @@ if (process.env && process.env.token) {
 
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
-let scheduledMessage = new cron.CronJob("00 05 19 * * *", () => {
+let scheduledMessage = new cron.CronJob("00 07 19 * * *", () => {
   // This runs every day at 10:30:00, you can do anything you want
   let channel = yourGuild.channels.get("770587361058488340");
   let quoteArray = ["Quote 1", "Quote 2", "Quote 3"];
