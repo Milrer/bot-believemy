@@ -45,7 +45,7 @@ async function happyDay() {
     });
 }
 // cron.schedule('45 7 * * *', happyDay());
-cron.schedule('*/3 * * * *', happyDay());
+cron.schedule('*/3 * * * *', async () => happyDay());
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
