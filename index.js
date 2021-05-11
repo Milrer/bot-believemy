@@ -34,7 +34,6 @@ cron.schedule('*/3 * * * *', () => {
             };
             date = date.toLocaleDateString('fr-FR', options);
             // const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
-            const name = response.data.name;
             const embed = new Discord.MessageEmbed();
             embed
                 .setAuthor(
@@ -42,7 +41,7 @@ cron.schedule('*/3 * * * *', () => {
                     'https://believemy.com/pictures/bebot/bebot-profile.png',
                 )
                 // .setDescription(`${quote.citation}`)
-                .setDescription(`Bonne fête aux *${name}*.`)
+                .setDescription(`Bonne fête aux *${response.name}*.`)
                 .setColor('613bdb')
                 .setTitle(`Nous sommes le ${date}`);
             // .setFooter(`${quote.nom}`, quote.image);
