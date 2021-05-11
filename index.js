@@ -18,41 +18,34 @@ if (process.env && process.env.token) {
 client.login(token).then(logger.log(`Bot démarré`, 'log'));
 
 // Citation quotidienne du matin
-const getNameOfTheDay = async () => {
+async function happyDay() {
     await Axios.get(
         'https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saints?api_key=JVVPdIFBvcdgNyEf',
-    )
-        .then(response => {
-            return response.saints.name;
-        })
-        .catch(error => {
-            console.log(error);
-        });
-};
-
-// cron.schedule('45 7 * * *', function () {
-cron.schedule('*/3 * * * *', function () {
-    let channel = client.channels.cache.get('770587361058488340');
-    let date = new Date();
-    const options = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: '2-digit',
-    };
-    date = date.toLocaleDateString('fr-FR', options);
-    const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
-    const name = getNameOfTheDay();
-    const embed = new Discord.MessageEmbed();
-    embed
-        .setAuthor('BeBot', 'https://believemy.com/pictures/bebot/bebot-profile.png')
-        // .setDescription(`${quote.citation}`)
-        .setDescription(`Bonne fête à tous les *${name}*.`)
-        .setColor('613bdb')
-        .setTitle(`Nous sommes le ${date}`)
-        .setFooter(`${quote.nom}`, quote.image);
-    channel.send(embed);
-});
+    ).then(response => {
+        let channel = client.channels.cache.get('770587361058488340');
+        let date = new Date();
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: '2-digit',
+        };
+        date = date.toLocaleDateString('fr-FR', options);
+        const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
+        const name = response.saints.name;
+        const embed = new Discord.MessageEmbed();
+        embed
+            .setAuthor('BeBot', 'https://believemy.com/pictures/bebot/bebot-profile.png')
+            // .setDescription(`${quote.citation}`)
+            .setDescription(`Bonne fête à tous les *${name}*.`)
+            .setColor('613bdb')
+            .setTitle(`Nous sommes le ${date}`)
+            .setFooter(`${quote.nom}`, quote.image);
+        channel.send(embed);
+    });
+}
+// cron.schedule('45 7 * * *', happyDay());
+cron.schedule('*/3 * * * *', happyDay());
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
