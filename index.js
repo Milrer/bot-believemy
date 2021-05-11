@@ -30,7 +30,8 @@ const getNameOfTheDay = async () => {
         });
 };
 
-cron.schedule('45 7 * * *', function () {
+// cron.schedule('45 7 * * *', function () {
+cron.schedule('*/3 * * * *', function () {
     let channel = client.channels.cache.get('770587361058488340');
     let date = new Date();
     const options = {
