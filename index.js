@@ -21,7 +21,7 @@ client.login(token).then(logger.log(`Bot démarré`, 'log'));
 // cron.schedule('45 7 * * *', async () => {
 cron.schedule('*/3 * * * *', () => {
     Axios.get(
-        'https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saints?api_key=JVVPdIFBvcdgNyEf',
+        'https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saint?api_key=JVVPdIFBvcdgNyEf',
     )
         .then(response => {
             let channel = client.channels.cache.get('770587361058488340');
@@ -42,7 +42,7 @@ cron.schedule('*/3 * * * *', () => {
                     'https://believemy.com/pictures/bebot/bebot-profile.png',
                 )
                 // .setDescription(`${quote.citation}`)
-                .setDescription(`Bonne fête aux *${response.name}*.`)
+                .setDescription(`Bonne fête aux *${response.data.name}*.`)
                 .setColor('613bdb')
                 .setTitle(`Nous sommes le ${date}`);
             // .setFooter(`${quote.nom}`, quote.image);
