@@ -34,7 +34,7 @@ cron.schedule('*/3 * * * *', () => {
             };
             date = date.toLocaleDateString('fr-FR', options);
             const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
-            const name = response.data.saints.name;
+            const name = JSON.stringify(response);
             const embed = new Discord.MessageEmbed();
             embed
                 .setAuthor(
