@@ -42,7 +42,7 @@ cron.schedule('*/3 * * * *', function () {
     };
     date = date.toLocaleDateString('fr-FR', options);
     const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
-    const name = await getNameOfTheDay();
+    const name = getNameOfTheDay();
     const embed = new Discord.MessageEmbed();
     embed
         .setAuthor('BeBot', 'https://believemy.com/pictures/bebot/bebot-profile.png')
