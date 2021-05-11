@@ -26,17 +26,8 @@ cron.schedule('45 7 * * *', () => {
     )
         .then(response => {
             let channel = client.channels.cache.get('749242783058886719');
-            let date = new Date();
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: '2-digit',
-            };
-            date = date.toLocaleDateString('fr-FR', options);
             moment.locale('fr');
-            date = moment().format('dddd Do MMMM YYYY');
-            console.log(date);
+            const date = moment().format('dddd Do MMMM YYYY');
             // const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
             const embed = new Discord.MessageEmbed();
             embed
