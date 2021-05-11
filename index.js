@@ -18,13 +18,12 @@ if (process.env && process.env.token) {
 client.login(token).then(logger.log(`Bot démarré`, 'log'));
 
 // Citation quotidienne du matin
-// cron.schedule('45 7 * * *', async () => {
-cron.schedule('*/3 * * * *', () => {
+cron.schedule('45 7 * * *', () => {
     Axios.get(
         'https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saint?api_key=JVVPdIFBvcdgNyEf',
     )
         .then(response => {
-            let channel = client.channels.cache.get('770587361058488340');
+            let channel = client.channels.cache.get('749242783058886719');
             let date = new Date();
             const options = {
                 weekday: 'long',
