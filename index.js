@@ -45,8 +45,8 @@ function happyDay() {
     });
 }
 // cron.schedule('45 7 * * *', happyDay());
-cron.schedule('*/3 * * * *', async () => {
-    await Axios.get(
+cron.schedule('*/3 * * * *', () => {
+    Axios.get(
         'https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saints?api_key=JVVPdIFBvcdgNyEf',
     ).then(response => {
         let channel = client.channels.cache.get('770587361058488340');
