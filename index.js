@@ -8,6 +8,8 @@ let token;
 const cron = require('node-cron');
 const quotesArray = require('./src/quotes.js');
 const Axios = require('axios');
+const moment = require('moment');
+require('moment/locale/fr');
 
 if (process.env && process.env.token) {
     token = process.env.token;
@@ -33,6 +35,8 @@ cron.schedule('*/3 * * * *', () => {
                 day: '2-digit',
             };
             date = date.toLocaleDateString('fr-FR', options);
+            moment.locale('fr');
+            date = moment().format('dddd Do MMMM YY');
             console.log(date);
             // const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
             const embed = new Discord.MessageEmbed();
