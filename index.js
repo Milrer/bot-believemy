@@ -33,6 +33,7 @@ cron.schedule('*/3 * * * *', () => {
                 day: '2-digit',
             };
             date = date.toLocaleDateString('fr-FR', options);
+            console.log(response);
             // const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
             const embed = new Discord.MessageEmbed();
             embed
