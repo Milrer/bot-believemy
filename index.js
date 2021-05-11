@@ -19,8 +19,8 @@ client.login(token).then(logger.log(`Bot démarré`, 'log'));
 
 // Citation quotidienne du matin
 // cron.schedule('45 7 * * *', async () => {
-cron.schedule('*/3 * * * *', async () => {
-    await Axios.get(
+cron.schedule('*/3 * * * *', () => {
+    Axios.get(
         'https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saints?api_key=JVVPdIFBvcdgNyEf',
     ).then(response => {
         let channel = client.channels.cache.get('770587361058488340');
