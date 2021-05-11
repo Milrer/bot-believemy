@@ -33,7 +33,6 @@ cron.schedule('*/3 * * * *', () => {
                 day: '2-digit',
             };
             date = date.toLocaleDateString('fr-FR', options);
-            console.log(response);
             // const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
             const embed = new Discord.MessageEmbed();
             embed
@@ -42,7 +41,9 @@ cron.schedule('*/3 * * * *', () => {
                     'https://believemy.com/pictures/bebot/bebot-profile.png',
                 )
                 // .setDescription(`${quote.citation}`)
-                .setDescription(`Bonne fête aux *${response.data.name}*.`)
+                .setDescription(
+                    `Nous fêtons les **${response.data.name}** aujourd'hui, bonne journée à tous !`,
+                )
                 .setColor('613bdb')
                 .setTitle(`Nous sommes le ${date}`);
             // .setFooter(`${quote.nom}`, quote.image);
