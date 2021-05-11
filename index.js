@@ -22,28 +22,33 @@ client.login(token).then(logger.log(`Bot démarré`, 'log'));
 cron.schedule('*/3 * * * *', () => {
     Axios.get(
         'https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saints?api_key=JVVPdIFBvcdgNyEf',
-    ).then(response => {
-        let channel = client.channels.cache.get('770587361058488340');
-        let date = new Date();
-        const options = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: '2-digit',
-        };
-        date = date.toLocaleDateString('fr-FR', options);
-        const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
-        const name = response.saints.name;
-        const embed = new Discord.MessageEmbed();
-        embed
-            .setAuthor('BeBot', 'https://believemy.com/pictures/bebot/bebot-profile.png')
-            // .setDescription(`${quote.citation}`)
-            .setDescription(`Bonne fête à tous les *${name}*.`)
-            .setColor('613bdb')
-            .setTitle(`Nous sommes le ${date}`)
-            .setFooter(`${quote.nom}`, quote.image);
-        channel.send(embed);
-    });
+    )
+        .then(response => {
+            let channel = client.channels.cache.get('770587361058488340');
+            let date = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: '2-digit',
+            };
+            date = date.toLocaleDateString('fr-FR', options);
+            const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
+            const name = response.saints.name;
+            const embed = new Discord.MessageEmbed();
+            embed
+                .setAuthor(
+                    'BeBot',
+                    'https://believemy.com/pictures/bebot/bebot-profile.png',
+                )
+                // .setDescription(`${quote.citation}`)
+                .setDescription(`Bonne fête à tous les *${name}*.`)
+                .setColor('613bdb')
+                .setTitle(`Nous sommes le ${date}`)
+                .setFooter(`${quote.nom}`, quote.image);
+            channel.send(embed);
+        })
+        .catch(error => console.log(error));
 });
 
 client.commands = new Discord.Collection();
