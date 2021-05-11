@@ -7,6 +7,7 @@ client.prefix = config.prefix;
 let token;
 const cron = require('node-cron');
 const quotesArray = require('./src/quotes.js');
+const Axios = require('axios');
 
 if (process.env && process.env.token) {
     token = process.env.token;
@@ -17,6 +18,18 @@ if (process.env && process.env.token) {
 client.login(token).then(logger.log(`Bot démarré`, 'log'));
 
 // Citation quotidienne du matin
+const getNameOfTheDay = async () => {
+    await Axios.get(
+        'https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saints?api_key=JVVPdIFBvcdgNyEf',
+    )
+        .then(response => {
+            return response.saints.name;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+};
+
 cron.schedule('45 7 * * *', function () {
     let channel = client.channels.cache.get('770587361058488340');
     let date = new Date();
@@ -28,10 +41,12 @@ cron.schedule('45 7 * * *', function () {
     };
     date = date.toLocaleDateString('fr-FR', options);
     const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
+    const name = await getNameOfTheDay();
     const embed = new Discord.MessageEmbed();
     embed
         .setAuthor('BeBot', 'https://believemy.com/pictures/bebot/bebot-profile.png')
-        .setDescription(`${quote.citation}`)
+        // .setDescription(`${quote.citation}`)
+        .setDescription(`Bonne fête à tous les *${name}*.`)
         .setColor('613bdb')
         .setTitle(`Nous sommes le ${date}`)
         .setFooter(`${quote.nom}`, quote.image);
