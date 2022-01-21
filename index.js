@@ -54,7 +54,10 @@ cron.schedule("*/5 * * * *", () => {
 
 					const news = new Discord.MessageEmbed();
 					news.setColor("613bdb").setTitle(
-						`C'est parti pour les 3 actualités les plus marquantes du monde de la technologie aujourd'hui :`,
+						`C'est l'heure du BeBot reporter !`,
+					);
+					news.setDescription(
+						`C'est parti pour les 3 actualités les plus marquantes aujourd'hui du monde de la technologie :`,
 					);
 					channel.send(news);
 
