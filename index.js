@@ -49,24 +49,18 @@ cron.schedule("*/5 * * * *", () => {
 						.setTitle(`Nous sommes le ${date}`);
 					// .setFooter(`${quote.nom}`, quote.image);
 					channel.send(embed);
-					let channel = client.channels.cache.get(
-						"770588039306018838",
-					);
-					moment.locale("fr");
-					const date = moment().format("dddd Do MMMM YYYY");
-					// const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
-					const embed = new Discord.MessageEmbed();
-					embed
-						.setAuthor(
-							"BeBot",
-							"https://believemy.com/pictures/bebot/bebot-profile.png",
-						)
+
+					const news = new Discord.MessageEmbed();
+					news.setAuthor(
+						"BeBot",
+						"https://believemy.com/pictures/bebot/bebot-profile.png",
+					)
 						.setColor("613bdb")
 						.setTitle(
 							`C'est parti pour les 3 actualités les plus marquantes du monde de la technologie aujourd'hui :`,
 						);
 					// .setFooter(`${quote.nom}`, quote.image);
-					channel.send(embed);
+					channel.send(news);
 				})
 				.catch((error) => {
 					console.log(error);
