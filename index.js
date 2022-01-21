@@ -20,7 +20,7 @@ if (process.env && process.env.token) {
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
 // Citation quotidienne du matin
-cron.schedule("*/5 * * * *", () => {
+cron.schedule("30 7 * * *", () => {
 	Axios.get(
 		"https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saint?api_key=JVVPdIFBvcdgNyEf",
 	)
@@ -32,7 +32,7 @@ cron.schedule("*/5 * * * *", () => {
 					console.log(responses.data);
 
 					let channel = client.channels.cache.get(
-						"770588039306018838",
+						"749242783058886719",
 					);
 					moment.locale("fr");
 					const date = moment().format("dddd Do MMMM YYYY");
@@ -54,10 +54,7 @@ cron.schedule("*/5 * * * *", () => {
 
 					const news = new Discord.MessageEmbed();
 					news.setColor("613bdb").setTitle(
-						`C'est l'heure du BeBot reporter !`,
-					);
-					news.setDescription(
-						`C'est parti pour les 3 actualités les plus marquantes aujourd'hui du monde de la technologie :`,
+						`C'est parti pour les 3 actualités les plus marquantes du monde de la technologie aujourd'hui :`,
 					);
 					channel.send(news);
 
