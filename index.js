@@ -29,6 +29,8 @@ cron.schedule("*/5 * * * *", () => {
 				"https://newsapi.org/v2/top-headlines?language=fr&category=technology&apiKey=22e993978b4043b0b16df2e1aaf44c3f&pageSize=3",
 			)
 				.then((responses) => {
+					console.log(responses.data);
+
 					let channel = client.channels.cache.get(
 						"770588039306018838",
 					);
@@ -51,15 +53,9 @@ cron.schedule("*/5 * * * *", () => {
 					channel.send(embed);
 
 					const news = new Discord.MessageEmbed();
-					news.setAuthor(
-						"BeBot",
-						"https://believemy.com/pictures/bebot/bebot-profile.png",
-					)
-						.setColor("613bdb")
-						.setTitle(
-							`C'est parti pour les 3 actualités les plus marquantes du monde de la technologie aujourd'hui :`,
-						);
-					// .setFooter(`${quote.nom}`, quote.image);
+					news.setColor("613bdb").setTitle(
+						`C'est parti pour les 3 actualités les plus marquantes du monde de la technologie aujourd'hui :`,
+					);
 					channel.send(news);
 				})
 				.catch((error) => {
