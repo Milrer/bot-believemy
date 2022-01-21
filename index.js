@@ -57,6 +57,29 @@ cron.schedule("*/5 * * * *", () => {
 						`C'est parti pour les 3 actualités les plus marquantes du monde de la technologie aujourd'hui :`,
 					);
 					channel.send(news);
+
+					for (
+						let i = 0;
+						i < responses.data.articles.length;
+						i++
+					) {
+						const content = new Discord.MessageEmbed();
+						content
+							.setColor("613bdb")
+							.setTitle(
+								`${responses.data.articles[i].title}`,
+							);
+						content.setDescription(
+							`${responses.data.articles[i].description}`,
+						);
+						content.setURL(
+							`${responses.data.articles[i].url}`,
+						);
+						content.setImage(
+							`${responses.data.articles[i].urlToImage}`,
+						);
+						channel.send(content);
+					}
 				})
 				.catch((error) => {
 					console.log(error);
