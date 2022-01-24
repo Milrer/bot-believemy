@@ -19,71 +19,67 @@ if (process.env && process.env.token) {
 
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
-// Citation quotidienne du matin
+// Bonjour du matin
 cron.schedule("30 7 * * *", () => {
 	Axios.get(
 		"https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saint?api_key=JVVPdIFBvcdgNyEf",
 	)
 		.then((response) => {
-			Axios.get(
-				"https://newsapi.org/v2/top-headlines?language=fr&category=technology&apiKey=22e993978b4043b0b16df2e1aaf44c3f&pageSize=3",
-			)
-				.then((responses) => {
-					console.log(responses.data);
+			let channel = client.channels.cache.get(
+				"749242783058886719",
+			);
+			moment.locale("fr");
+			const date = moment().format("dddd Do MMMM YYYY");
+			const embed = new Discord.MessageEmbed();
+			embed
+				.setAuthor(
+					"BeBot",
+					"https://believemy.com/pictures/bebot/bebot-profile.png",
+				)
+				// .setDescription(`${quote.citation}`)
+				.setDescription(
+					`Nous fêtons les **${response.data.name}** aujourd'hui, bonne journée à tous !`,
+				)
+				.setColor("613bdb")
+				.setTitle(`Nous sommes le ${date}`);
+			// .setFooter(`${quote.nom}`, quote.image);
+			channel.send(embed);
+		})
+		.catch((error) => console.log(error));
+});
 
-					let channel = client.channels.cache.get(
-						"749242783058886719",
-					);
-					moment.locale("fr");
-					const date = moment().format("dddd Do MMMM YYYY");
-					// const quote = quotesArray[Math.floor(Math.random() * quotesArray.length)];
-					const embed = new Discord.MessageEmbed();
-					embed
-						.setAuthor(
-							"BeBot",
-							"https://believemy.com/pictures/bebot/bebot-profile.png",
-						)
-						// .setDescription(`${quote.citation}`)
-						.setDescription(
-							`Nous fêtons les **${response.data.name}** aujourd'hui, bonne journée à tous !`,
-						)
-						.setColor("613bdb")
-						.setTitle(`Nous sommes le ${date}`);
-					// .setFooter(`${quote.nom}`, quote.image);
-					channel.send(embed);
+// News du matin
+cron.schedule("/5 * * * *", () => {
+	Axios.get(
+		"https://newsapi.org/v2/top-headlines?language=fr&category=technology&apiKey=22e993978b4043b0b16df2e1aaf44c3f&pageSize=5",
+	)
+		.then((responses) => {
+			console.log(responses.data);
+			let channel = client.channels.cache.get(
+				"935189379616485426",
+			);
+			moment.locale("fr");
+			const date = moment().format("dddd Do MMMM YYYY");
+			const news = new Discord.MessageEmbed();
+			news.setColor("613bdb").setTitle(
+				`BeBot-Reporter - Actualités du ${date}`,
+			);
+			channel.send(news);
 
-					const news = new Discord.MessageEmbed();
-					news.setColor("613bdb").setTitle(
-						`C'est parti pour les 3 actualités les plus marquantes du monde de la technologie aujourd'hui :`,
-					);
-					channel.send(news);
-
-					for (
-						let i = 0;
-						i < responses.data.articles.length;
-						i++
-					) {
-						const content = new Discord.MessageEmbed();
-						content
-							.setColor("613bdb")
-							.setTitle(
-								`${responses.data.articles[i].title}`,
-							);
-						content.setDescription(
-							`${responses.data.articles[i].description}`,
-						);
-						content.setURL(
-							`${responses.data.articles[i].url}`,
-						);
-						content.setImage(
-							`${responses.data.articles[i].urlToImage}`,
-						);
-						channel.send(content);
-					}
-				})
-				.catch((error) => {
-					console.log(error);
-				});
+			for (let i = 0; i < responses.data.articles.length; i++) {
+				const content = new Discord.MessageEmbed();
+				content
+					.setColor("613bdb")
+					.setTitle(`${responses.data.articles[i].title}`);
+				content.setDescription(
+					`${responses.data.articles[i].description}`,
+				);
+				content.setURL(`${responses.data.articles[i].url}`);
+				content.setImage(
+					`${responses.data.articles[i].urlToImage}`,
+				);
+				channel.send(content);
+			}
 		})
 		.catch((error) => console.log(error));
 });
