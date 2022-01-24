@@ -49,7 +49,7 @@ cron.schedule("30 7 * * *", () => {
 });
 
 // News du matin
-cron.schedule("/5 * * * *", () => {
+cron.schedule("*/5 * * * *", () => {
 	Axios.get(
 		"https://newsapi.org/v2/top-headlines?language=fr&category=technology&apiKey=22e993978b4043b0b16df2e1aaf44c3f&pageSize=5",
 	)
