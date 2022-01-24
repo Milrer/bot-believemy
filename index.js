@@ -49,40 +49,38 @@ cron.schedule("30 7 * * *", () => {
 });
 
 // News du matin
-cron.schedule("*/5 * * * *", () => {
-	Axios.get(
-		"https://newsapi.org/v2/top-headlines?language=fr&category=technology&apiKey=22e993978b4043b0b16df2e1aaf44c3f&pageSize=5",
-	)
-		.then((responses) => {
-			console.log(responses.data);
-			let channel = client.channels.cache.get(
-				"935189379616485426",
-			);
-			moment.locale("fr");
-			const date = moment().format("dddd Do MMMM YYYY");
-			const news = new Discord.MessageEmbed();
-			news.setColor("613bdb").setTitle(
-				`BeBot-Reporter - Actualités du ${date}`,
-			);
-			channel.send(news);
+// cron.schedule("*/5 * * * *", () => {
+// 	Axios.get(
+// 		"https://newsapi.org/v2/top-headlines?language=fr&category=technology&apiKey=22e993978b4043b0b16df2e1aaf44c3f&pageSize=5",
+// 	)
+// 		.then((responses) => {
+// 			console.log(responses.data);
+// 			let channel = client.channels.cache.get(
+// 				"935189379616485426",
+// 			);
+// 			moment.locale("fr");
+// 			const date = moment().format("dddd Do MMMM YYYY");
+// 			const news = new Discord.MessageEmbed();
+// 			news.setColor("613bdb").setTitle(`Actualités du ${date}`);
+// 			channel.send(news);
 
-			for (let i = 0; i < responses.data.articles.length; i++) {
-				const content = new Discord.MessageEmbed();
-				content
-					.setColor("613bdb")
-					.setTitle(`${responses.data.articles[i].title}`);
-				content.setDescription(
-					`${responses.data.articles[i].description}`,
-				);
-				content.setURL(`${responses.data.articles[i].url}`);
-				content.setImage(
-					`${responses.data.articles[i].urlToImage}`,
-				);
-				channel.send(content);
-			}
-		})
-		.catch((error) => console.log(error));
-});
+// 			for (let i = 0; i < responses.data.articles.length; i++) {
+// 				const content = new Discord.MessageEmbed();
+// 				content
+// 					.setColor("613bdb")
+// 					.setTitle(`${responses.data.articles[i].title}`);
+// 				content.setDescription(
+// 					`${responses.data.articles[i].description}`,
+// 				);
+// 				content.setURL(`${responses.data.articles[i].url}`);
+// 				content.setImage(
+// 					`${responses.data.articles[i].urlToImage}`,
+// 				);
+// 				channel.send(content);
+// 			}
+// 		})
+// 		.catch((error) => console.log(error));
+// });
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
