@@ -20,10 +20,8 @@ if (process.env && process.env.token) {
 
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
-console.log(ephemeris.getEphemerisName());
-
 // Bonjour du matin
-cron.schedule("23 9 * * *", () => {
+cron.schedule("26 9 * * *", () => {
 	let channel = client.channels.cache.get("749242783058886719");
 	moment.locale("fr");
 	const date = moment().format("dddd Do MMMM YYYY");
@@ -35,7 +33,7 @@ cron.schedule("23 9 * * *", () => {
 		)
 		// .setDescription(`${quote.citation}`)
 		.setDescription(
-			`Nous fêtons les **${ephemeris.getEphemerisName()}** aujourd'hui, bonne journée à tous !`,
+			`Nous fêtons les **${ephemeris.getTodayEphemerisName()}** aujourd'hui, bonne journée à tous !`,
 		)
 		.setColor("613bdb")
 		.setTitle(`Nous sommes le ${date}`);
