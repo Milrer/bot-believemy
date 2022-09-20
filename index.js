@@ -20,9 +20,9 @@ if (process.env && process.env.token) {
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
 // Bonjour du matin
-cron.schedule("30 7 * * *", () => {
+cron.schedule("03 9 * * *", () => {
 	Axios.get(
-		"https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-saint?api_key=JVVPdIFBvcdgNyEf",
+		"https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-normal",
 	)
 		.then((response) => {
 			let channel = client.channels.cache.get(
