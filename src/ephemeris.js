@@ -1,4 +1,4 @@
-let ephemeris = {
+module.export = {
 	source: {
 		january: [
 			["Jour de l'An", ""],
