@@ -20,10 +20,8 @@ if (process.env && process.env.token) {
 
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
-console.log(ephemeris.getTodayEphemerisName());
-
 // Bonjour du matin
-cron.schedule("30 9 * * *", () => {
+cron.schedule("45 9 * * *", () => {
 	let channel = client.channels.cache.get("749242783058886719");
 	moment.locale("fr");
 	const date = moment().format("dddd Do MMMM YYYY");
