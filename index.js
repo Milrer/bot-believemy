@@ -10,6 +10,7 @@ const quotesArray = require("./src/quotes.js");
 const Axios = require("axios");
 const moment = require("moment");
 require("moment/locale/fr");
+const ephemeris = require("src/ephemeris.js");
 
 if (process.env && process.env.token) {
 	token = process.env.token;
@@ -20,32 +21,24 @@ if (process.env && process.env.token) {
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
 // Bonjour du matin
-cron.schedule("12 9 * * *", () => {
-	Axios.get(
-		"https://fetedujour.fr/api/v2/JVVPdIFBvcdgNyEf/json-normal",
-	)
-		.then((response) => {
-			let channel = client.channels.cache.get(
-				"749242783058886719",
-			);
-			moment.locale("fr");
-			const date = moment().format("dddd Do MMMM YYYY");
-			const embed = new Discord.MessageEmbed();
-			embed
-				.setAuthor(
-					"BeBot",
-					"https://believemy.com/pictures/bebot/bebot-profile.png",
-				)
-				// .setDescription(`${quote.citation}`)
-				.setDescription(
-					`Nous fêtons les **${response.data.name}** aujourd'hui, bonne journée à tous !`,
-				)
-				.setColor("613bdb")
-				.setTitle(`Nous sommes le ${date}`);
-			// .setFooter(`${quote.nom}`, quote.image);
-			channel.send(embed);
-		})
-		.catch((error) => console.log(error));
+cron.schedule("23 9 * * *", () => {
+	let channel = client.channels.cache.get("749242783058886719");
+	moment.locale("fr");
+	const date = moment().format("dddd Do MMMM YYYY");
+	const embed = new Discord.MessageEmbed();
+	embed
+		.setAuthor(
+			"BeBot",
+			"https://believemy.com/pictures/bebot/bebot-profile.png",
+		)
+		// .setDescription(`${quote.citation}`)
+		.setDescription(
+			`Nous fêtons les **${ephemeris.getEphemerisName()}** aujourd'hui, bonne journée à tous !`,
+		)
+		.setColor("613bdb")
+		.setTitle(`Nous sommes le ${date}`);
+	// .setFooter(`${quote.nom}`, quote.image);
+	channel.send(embed);
 });
 
 // News du matin
