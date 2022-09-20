@@ -10,7 +10,7 @@ const quotesArray = require("./src/quotes.js");
 const Axios = require("axios");
 const moment = require("moment");
 require("moment/locale/fr");
-const ephemeris = require("src/ephemeris.js");
+const ephemeris = require("./src/ephemeris.js");
 
 if (process.env && process.env.token) {
 	token = process.env.token;
