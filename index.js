@@ -10,7 +10,7 @@ const quotesArray = require("./src/quotes.js");
 const Axios = require("axios");
 const moment = require("moment");
 require("moment/locale/fr");
-const ephemeris = require("./src/ephemeris.js");
+require("./src/ephemeris.js");
 
 if (process.env && process.env.token) {
 	token = process.env.token;
@@ -23,7 +23,7 @@ client.login(token).then(logger.log(`Bot démarré`, "log"));
 console.log(ephemeris.getTodayEphemerisName());
 
 // Bonjour du matin
-cron.schedule("26 9 * * *", () => {
+cron.schedule("30 9 * * *", () => {
 	let channel = client.channels.cache.get("749242783058886719");
 	moment.locale("fr");
 	const date = moment().format("dddd Do MMMM YYYY");
