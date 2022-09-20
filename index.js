@@ -20,7 +20,7 @@ if (process.env && process.env.token) {
 
 client.login(token).then(logger.log(`Bot démarré`, "log"));
 
-console.log(ephmeris.getEphemerisName());
+console.log(ephemeris.getEphemerisName());
 
 // Bonjour du matin
 cron.schedule("23 9 * * *", () => {
