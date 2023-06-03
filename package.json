@@ -1,22 +1,23 @@
 {
-	"name": "believemy",
-	"version": "1.0.0",
-	"description": "Un bot communautaire pour believemy",
-	"main": "index.js",
-	"scripts": {
-		"start": "nodemon"
-	},
-	"author": "",
-	"license": "",
-	"dependencies": {
-		"axios": "^0.21.1",
-		"chalk": "^4.0.0",
-		"discord.js": "^12.2.0",
-		"fs": "0.0.1-security",
-		"moment": "^2.29.1",
-		"node-cron": "^3.0.0"
-	},
-	"devDependencies": {
-		"nodemon": "^2.0.7"
-	}
+    "name": "bebot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "main.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon main.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^1.4.0",
+        "discord.js": "^14.11.0",
+        "dotenv": "^16.0.3",
+        "moment": "^2.29.4",
+        "moment-timezone": "^0.5.43",
+        "node-cron": "^3.0.2",
+        "nodemon": "^2.0.22"
+    }
 }

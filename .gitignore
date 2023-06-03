@@ -1,5 +1,5 @@
 node_modules/
-Configs/token.js
 package-lock.json
 .idea
 .vsc
+.env
