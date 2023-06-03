@@ -21,7 +21,7 @@ export default {
             await message.delete();
             return message.channel
                 .send({
-                    content: `${message.author}, il est interdit de poster des liens : vous devez avoir le rôle <@&1111224353804263425> ou <@&1111212236883644567> pour cela.`,
+                    content: `${message.author}, il est interdit de poster des liens : vous devez avoir le rôle Développeur ou Entrepreneur pour cela.`,
                 })
                 .then((msg) => {
                     setTimeout(() => msg.delete(), 5000);
