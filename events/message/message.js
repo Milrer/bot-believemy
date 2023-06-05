@@ -4,8 +4,18 @@ export default {
   name: Events.MessageCreate,
   on: true,
   async execute(message) {
+    const link = ["https://discord.gg/", "discord.gg"];
     const regex = /\[[\w\s]+\]/;
-    if (message.author.bot) {
+    if (message.content.includes(link)) {
+      await message.delete();
+      return message.channel
+        .send({
+          content: `${message.author}, merci de bien formater le lien, [nom de la ressource] votre lien`,
+        })
+        .then((msg) => {
+          setTimeout(() => msg.delete(), 5000);
+        });
+    } else if (message.author.bot) {
       return;
     }
     if (
