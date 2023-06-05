@@ -8,9 +8,15 @@ export default {
         const whiteList = [
             "https://tenor.com/",
             "https://www.tenor.com",
-            "https://believemy.com",
-            "https://www.believemy.com",
+            "believemy.com",
             "mozilla.org",
+            "youtube.com",
+            "nextjs.org",
+            "github.com",
+            "reactjs.org",
+            "tailwindcss.com",
+            "tailwindui.com",
+            "getbootstrap.com",
         ];
         const isWhitelisted = whiteList.some((whiteLink) =>
             message.content.includes(whiteLink),
