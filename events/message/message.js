@@ -11,9 +11,13 @@ export default {
     // ) {
     //   return;
     // }
+    const whiteList = ["https://tenor.com/"];
     const link = ["https://discord.gg/", "discord.gg"];
     const regex = /\[[\w\s]+\]/;
-    if (message.content.includes(link)) {
+
+    if (message.content.includes(whiteList)) {
+      return;
+    } else if (message.content.includes(link)) {
       await message.delete();
       return message.channel
         .send({
