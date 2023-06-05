@@ -4,6 +4,13 @@ export default {
   name: Events.MessageCreate,
   on: true,
   async execute(message) {
+    // if (
+    //   message.author.id === "286174545969283094" ||
+    //   message.member.roles.cache.has("1111224353804263425") ||
+    //   message.member.roles.cache.has("1111212236883644567")
+    // ) {
+    //   return;
+    // }
     const link = ["https://discord.gg/", "discord.gg"];
     const regex = /\[[\w\s]+\]/;
     if (message.content.includes(link)) {
@@ -16,13 +23,6 @@ export default {
           setTimeout(() => msg.delete(), 5000);
         });
     } else if (message.author.bot) {
-      return;
-    }
-    if (
-      message.author.id === "286174545969283094" ||
-      message.member.roles.cache.has("1111224353804263425") ||
-      message.member.roles.cache.has("1111212236883644567")
-    ) {
       return;
     } else if (regex.test(message.content)) {
       return;
