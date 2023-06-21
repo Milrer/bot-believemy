@@ -6,7 +6,7 @@ export default {
     data: {
         name: "verify",
         description:
-            "Permet de vérifier si vous êtes étudiant d'un de nos programmes pour vous octroyer l'accès à des salons supplémentaires.",
+            "Permet de vérifier si vous êtes étudiant d'un de nos programmes.",
     },
 
     async execute(interaction) {
