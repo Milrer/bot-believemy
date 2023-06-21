@@ -1,10 +1,11 @@
 import axios from "axios";
 
 export default {
+    cooldown: 10,
     data: {
         name: "collaborateur",
         description: "Découvrez les collaborateurs de BeBot",
-        cooldown: 10,
+
     },
 
     async execute(interaction) {

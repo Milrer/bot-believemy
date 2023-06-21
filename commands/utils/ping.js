@@ -1,8 +1,8 @@
 export default {
+  cooldown: 10,
   data: {
     name: "ping",
     description: "Replies with Pong!",
-    cooldown: 10,
   },
 
   async execute(interaction) {
