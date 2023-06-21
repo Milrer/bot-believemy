@@ -6,7 +6,7 @@ export default {
     data: {
         name: "verify",
         description:
-            "Permet de vérifier si vous êtes étudiant d'un de nos programmes pour vous octroyer des droits supplémentaires.",
+            "Permet de vérifier si vous êtes étudiant d'un de nos programmes pour vous octroyer l'accès à des salons supplémentaires.",
     },
 
     async execute(interaction) {
@@ -87,7 +87,7 @@ export default {
                         },
                     };
                     const welcome = {
-                        title: "🔥 Bienvenue au programme rocket !",
+                        title: "🔥 Bienvenue dans le Programme Rocket !",
                         description: `Bienvenue ${member.toString()} ! Te voici maintenant sur l'espace réservé aux étudiants, dis-nous en plus sur toi !`,
                         footer: {
                             text: `BeBot @${date.getFullYear()} | believemy.com`,
