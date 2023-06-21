@@ -1,6 +1,8 @@
 import { setTimeout } from "timers/promises";
 import * as dotenv from "dotenv";
+import axios from "axios";
 dotenv.config();
+
 export default {
     cooldown: 60,
     data: {
@@ -18,15 +20,14 @@ export default {
                 process.env.CHANNEL_SEND_ID,
             );
 
-            const rocket = await fetch(
+            const rocket = await axios.post(
                 "https://believemy.com/api/webhooks/check-student",
                 {
-                    method: "post",
+                    pseudo: interaction.user.username,
+                    token: process.env.TOKEN_BELIEVEMY,
+                },
+                {
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        pseudo: interaction.user.username,
-                        token: process.env.TOKEN_BELIEVEMY,
-                    }),
                 },
             );
 
@@ -51,8 +52,8 @@ export default {
                 return await interaction.deleteReply();
             }
 
-            if (rocket.ok) {
-                const data = await rocket.json();
+            if (rocket.status === 200) {
+                const data = rocket.data;
                 if (!data.IS_A_ROCKET_STUDENT) {
                     const studentRefused = {
                         title: "⛔ Accès refusé",
