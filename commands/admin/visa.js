@@ -94,7 +94,7 @@ export default {
                         await setTimeout(15000);
                         return await interaction.deleteReply();
                     } else {
-                        await member.roles.add(studentRoleId);
+                        await member.roles.add(visaRoleId);
                         const userAuthorized = {
                             title: "✅ Accès autorisé",
                             color: 0x57f287,
