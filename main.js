@@ -1,28 +1,16 @@
-import {
-    Client,
-    Collection,
-    Events,
-    GatewayIntentBits,
-    MessageFlags,
-} from "discord.js";
-import * as dotenv from "dotenv";
+import { Client } from 'discord.js';
+import * as dotenv from 'dotenv';
 dotenv.config();
-import { registerEvents } from "./helpers/registerEvent.js";
-import { ephemerisRepeat } from "./helpers/ephemerisRepeat.js";
+import { registerEvents } from './helpers/registerEvent.js';
 
-// Create a new client instance
 const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMessages,
-    ],
+    intents: 3276799,
     allowedMentions: {
-        parse: ["users", "roles"],
+        parse: ['users', 'roles'],
         repliedUser: false,
     },
 });
-registerEvents(client);
-ephemerisRepeat(client);
 
-client.login(process.env.TOKEN);
+await registerEvents(client);
+
+await client.login(process.env.TOKEN);
