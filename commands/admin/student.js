@@ -59,7 +59,8 @@ export default {
                     const studentRefused = {
                         title: '⛔ Accès refusé',
                         color: 0xed4245,
-                        description: "Vous n'êtes pas étudiant rocket",
+                        description:
+                            "Vous n'êtes pas étudiant du Programme Rocket",
                         footer: {
                             text: `BeBot @${date.getFullYear()} | believemy.com`,
                             icon_url: interaction.user.displayAvatarURL({
@@ -78,7 +79,7 @@ export default {
                     const studentAuthorized = {
                         title: '✅ Accès autorisé',
                         color: 0x57f287,
-                        description: 'Bien joué vous vous êtes inscrit !',
+                        description: 'Bienvenue dans le Programme Rocket !',
                         footer: {
                             text: `BeBot @${date.getFullYear()} | believemy.com`,
                             icon_url: interaction.user.displayAvatarURL({
