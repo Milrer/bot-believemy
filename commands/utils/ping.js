@@ -2,28 +2,28 @@ export default {
   cooldown: 10,
   data: {
     name: "ping",
-    description: "Replies with Pong!",
+    description: "Renvoie le ping du bot",
   },
 
   async execute(interaction) {
-    const botPing = Date.now() - interaction.createdTimestamp;
-    const apiPing = interaction.client.ws.ping;
+    const botPing = await interaction.reply({
+      content: "Ping en cours...",
+      fetchReply: true,
+    });
     const embedPing = {
-      title: "🏓 Pong!",
-      fields: [
-        {
-          name: "Bot Ping",
-          value: `${botPing}ms`,
-          inline: true,
-        },
-        {
-          name: "API Ping",
-          value: `${apiPing}ms`,
-          inline: true,
-        },
-      ],
+      color: 0x613bdb,
+      author: {
+        name: `${interaction.client.user.username}`,
+        icon_url: "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
+        url: "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
+      },
+      description: `**Ping du bot**: ${
+        botPing.createdTimestamp - interaction.createdTimestamp
+      }ms`,
+      timestamp: new Date().toISOString(),
     };
-    await interaction.reply({
+    await interaction.editReply({
+      content: "",
       embeds: [embedPing],
     });
   },

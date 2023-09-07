@@ -1,25 +1,35 @@
 import cron from "node-cron";
-import moment from "moment";
-import { getTodayEphemerisName } from "../src/ephemeris.js";
+
+import {
+  getTodayEphemerisName,
+  getTodayEphemerisNameWiki,
+} from "../ephemeris/ephemeris.js";
+import dayjs from "dayjs";
+import frLocale from "dayjs/locale/fr.js";
+dayjs.locale(frLocale);
 
 export function ephemerisRepeat(client) {
-    cron.schedule("45 5 * * *", () => {
-        let channel = client.channels.cache.get("749242783058886719");
-        moment.locale("fr");
-        const date = moment().format("dddd Do MMMM YYYY");
-        const embed = {
-            title: `Nous sommes le ${date}`,
-            author: {
-                name: "bebot",
-                icon_url:
-                    "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
-                url: "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
-            },
-            description: `Nous fêtons les **${getTodayEphemerisName()}** aujourd'hui, bonne journée à tous !`,
-            color: 0x613bdb,
-        };
-        channel.send({
-            embeds: [embed],
-        });
+  cron.schedule("45 5 * * *", () => {
+    let channel = client.channels.cache.get(process.env.CHANNEL_FETE);
+    const date = dayjs().format("dddd D MMMM YYYY");
+    const embed = {
+      color: 0x613bdb,
+      title: `Nous sommes le ${date}`,
+      url: `https://fr.wikipedia.org/wiki/${getTodayEphemerisNameWiki()}`,
+      author: {
+        name: `${client.user.username}`,
+        icon_url: "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
+        url: "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
+      },
+      description: `Nous fêtons les **${getTodayEphemerisName()}** aujourd'hui, bonne journée à tous !`,
+      timestamp: new Date().toISOString(),
+      footer: {
+        text: `${client.user.username} vous souhaite une agréable journée`,
+        icon_url: `${client.user.displayAvatarURL()}`,
+      },
+    };
+    channel.send({
+      embeds: [embed],
     });
+  });
 }
