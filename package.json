@@ -6,23 +6,21 @@
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "nodemon main.js"
+        "start": "nodemon main.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "discord.js": "^14.11.0",
-        "dotenv": "^16.0.3",
+        "axios": "^1.5.0",
+        "dayjs": "^1.11.9",
+        "discord.js": "^14.13.0",
+        "dotenv": "^16.3.1",
         "moment": "^2.29.4",
         "moment-timezone": "^0.5.43",
-        "nekos.life": "^3.0.0",
-        "node-cron": "^3.0.2",
-        "nodemon": "^2.0.22",
-        "prettier": "^3.0.0"
+        "node-cron": "^3.0.2"
     },
     "devDependencies": {
-        "eslint": "^8.45.0",
-        "eslint-config-prettier": "^8.8.0"
+        "nodemon": "^3.0.1"
     }
 }
