@@ -54,7 +54,7 @@ export default {
             }
 
             if (rocket.status == 200) {
-                const data = await rocket.json();
+                const data = rocket.data;
                 if (!data.IS_A_ROCKET_STUDENT) {
                     const studentRefused = {
                         title: '⛔ Accès refusé',
