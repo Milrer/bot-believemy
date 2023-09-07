@@ -1,5 +1,6 @@
 import { setTimeout } from 'timers/promises';
 import * as dotenv from 'dotenv';
+import axios from 'axios';
 dotenv.config();
 export default {
     cooldown: 60,
