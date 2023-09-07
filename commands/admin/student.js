@@ -53,7 +53,7 @@ export default {
                 return await interaction.deleteReply();
             }
 
-            if (rocket.ok) {
+            if (rocket.status == 200) {
                 const data = await rocket.json();
                 if (!data.IS_A_ROCKET_STUDENT) {
                     const studentRefused = {
