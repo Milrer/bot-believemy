@@ -87,8 +87,8 @@ export default {
                         },
                     };
                     const welcome = {
-                        title: '🔥 Bienvenue au programme rocket !',
-                        description: `Félicitations à ${member.toString()} ! Ils vient de nous rejoindre !`,
+                        title: '🔥 Bienvenue dans le Programme Rocket !',
+                        description: `Félicitations à ${member.toString()} ! Il vient de nous rejoindre !`,
                         footer: {
                             text: `BeBot @${date.getFullYear()} | believemy.com`,
                             icon_url: interaction.user.displayAvatarURL({
