@@ -9,7 +9,7 @@ import frLocale from 'dayjs/locale/fr.js';
 dayjs.locale(frLocale);
 
 export function ephemerisRepeat(client) {
-    cron.schedule('57 9 * * *', () => {
+    cron.schedule('59 9 * * *', () => {
         let channel = client.channels.cache.get(process.env.CHANNEL_FETE);
         const date = dayjs().format('dddd D MMMM YYYY');
         const embed = {
