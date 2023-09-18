@@ -1,4 +1,4 @@
-import { Client } from 'discord.js';
+import { ActivityType, Client } from 'discord.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import { registerEvents } from './helpers/registerEvent.js';
@@ -9,6 +9,14 @@ const client = new Client({
     allowedMentions: {
         parse: ['users', 'roles'],
         repliedUser: false,
+    },
+    presence: {
+        activities: [
+            {
+                name: 'tout le monde',
+                type: ActivityType.Watching,
+            },
+        ],
     },
 });
 
