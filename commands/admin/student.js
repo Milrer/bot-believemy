@@ -1,6 +1,7 @@
 import { setTimeout } from 'timers/promises';
 import * as dotenv from 'dotenv';
 import axios from 'axios';
+import { embedError } from '../../helpers/errorEmbed.js';
 dotenv.config();
 export default {
     cooldown: 60,
@@ -111,7 +112,7 @@ export default {
                 throw new Error('La requête au webhook à échoué !');
             }
         } catch (error) {
-            console.log(error);
+            embedError(interaction, 'Une erreur est survenue', error.message);
         }
     },
 };

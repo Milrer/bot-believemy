@@ -5,10 +5,6 @@ export default {
     once: true,
     async execute(client) {
         console.log(`Ready! Logged in as ${client.user.tag}`);
-        try {
-            registerCommands(client);
-        } catch (error) {
-            console.log(error);
-        }
+        await registerCommands(client);
     },
 };

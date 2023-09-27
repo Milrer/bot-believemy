@@ -11,18 +11,7 @@ export default {
         const isBlacklisted = blacklist.some((blackLink) =>
             message.content.includes(blackLink)
         );
-        if (
-            message.content == 'http://localhost' ||
-            message.content == 'http://localhost/' ||
-            message.content == 'http://localhost:3000' ||
-            message.content == 'http://localhost:3000/' ||
-            message.content == 'http://localhost:5173' ||
-            message.content == 'http://localhost:5173/' ||
-            message.content == 'http://localhost:8080' ||
-            message.content == 'http://localhost:8080/' ||
-            message.content == 'http://localhost:8000' ||
-            message.content == 'http://localhost:8000/'
-        ) {
+        if (message.content.startsWith('http://localhost')) {
             return;
         }
         if (isBlacklisted) {
