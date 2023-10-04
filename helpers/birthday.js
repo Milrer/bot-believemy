@@ -54,8 +54,8 @@ export function birthday(client) {
             if (steveJobsData && steveJobsData.length > 0) {
                 let fieldsSteveJobs = [];
                 const randomPhrases = [
-                    'Bonne anniversaire à vous les Steves Jobs',
-                    'Contruisez une tesla',
+                    'Un très joyeux anniversaire !',
+                    "C'est un jour spécial ! Bon anniversaire !",
                 ];
                 const random =
                     randomPhrases[
@@ -81,7 +81,7 @@ export function birthday(client) {
                     );
                 }
                 const embedSteveJobs = {
-                    title: 'Fondation steve_jobs',
+                    title: 'Promotion Steve Jobs',
                     color: 0x613bdb,
                     description: random,
                     author: {
@@ -102,8 +102,8 @@ export function birthday(client) {
             if (margaretHamiltonData && margaretHamiltonData.length > 0) {
                 let fieldsmargaretHamilton = [];
                 const randomPhrasesMargaret = [
-                    'Bonne anniversaire à vous les Steves Jobs',
-                    'Contruisez une tesla',
+                    'Un très joyeux anniversaire !',
+                    "C'est un jour spécial ! Bon anniversaire !",
                 ];
                 const randomMargaret =
                     randomPhrasesMargaret[
@@ -129,7 +129,7 @@ export function birthday(client) {
                     );
                 }
                 const embedMargaretHamilton = {
-                    title: 'Fondation margaret_hamilton',
+                    title: 'Promotion Margaret Hamilton',
                     color: 0x613bdb,
                     description: randomMargaret,
                     author: {
@@ -150,8 +150,8 @@ export function birthday(client) {
             if (toruIwataniData && toruIwataniData.length > 0) {
                 let fieldsToruIwatani = [];
                 const randomPhrasesToru = [
-                    'Bonne anniversaire à vous les Steves Jobs',
-                    'Contruisez une tesla',
+                    'Un très joyeux anniversaire !',
+                    "C'est un jour spécial ! Bon anniversaire !",
                 ];
                 const randomToru =
                     randomPhrasesToru[
@@ -177,7 +177,7 @@ export function birthday(client) {
                     );
                 }
                 const embedToruIwatani = {
-                    title: 'Fondation toru_iwatani',
+                    title: 'Promotion Tōru Iwatani',
                     color: 0x613bdb,
                     description: randomToru,
                     author: {
