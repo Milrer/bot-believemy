@@ -7,7 +7,7 @@ export default {
     cooldown: 60,
     data: {
         name: 'verify',
-        description: 'Permet de vérifier si vous êtes un student',
+        description: 'Permet de vérifier si vous êtes un accéléré',
     },
 
     async execute(interaction) {
@@ -38,7 +38,7 @@ export default {
                     title: '🔥 Vous êtes déja chez nous',
                     color: 0x57f287,
                     description:
-                        'Vous êtes déjà inscrit. Vous ne pouvez pas vous inscrire à nouveau.',
+                        'Vous êtes déjà inscrit. Vous ne pouvez pas vous inscrire de nouveau.',
                     footer: {
                         text: `BeBot @${date.getFullYear()} | believemy.com`,
                         icon_url: interaction.user.displayAvatarURL({
@@ -61,7 +61,7 @@ export default {
                         title: '⛔ Accès refusé',
                         color: 0xed4245,
                         description:
-                            "Vous n'êtes pas étudiant du Programme Rocket",
+                            "Vous n'êtes pas sur notre Accélérateur Rocket",
                         footer: {
                             text: `BeBot @${date.getFullYear()} | believemy.com`,
                             icon_url: interaction.user.displayAvatarURL({
@@ -80,7 +80,7 @@ export default {
                     const studentAuthorized = {
                         title: '✅ Accès autorisé',
                         color: 0x57f287,
-                        description: 'Bienvenue dans le Programme Rocket !',
+                        description: "Bienvenue dans l'Accélérateur Rocket !",
                         footer: {
                             text: `BeBot @${date.getFullYear()} | believemy.com`,
                             icon_url: interaction.user.displayAvatarURL({
@@ -89,8 +89,8 @@ export default {
                         },
                     };
                     const welcome = {
-                        title: '🔥 Bienvenue dans le Programme Rocket !',
-                        description: `Félicitations à ${member.toString()} ! Il vient de nous rejoindre !`,
+                        title: "🔥 Bienvenue dans l'Accélérateur Rocket !",
+                        description: `Félicitations à ${member.toString()} qui vient de nous rejoindre !`,
                         footer: {
                             text: `BeBot @${date.getFullYear()} | believemy.com`,
                             icon_url: interaction.user.displayAvatarURL({
