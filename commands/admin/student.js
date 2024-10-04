@@ -3,10 +3,12 @@ import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { embedError } from '../../helpers/errorEmbed.js';
 import OpenAI from 'openai';
+
+dotenv.config();
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
-dotenv.config();
 
 export default {
     cooldown: 60,
