@@ -4,7 +4,7 @@ import { getTodayEphemerisName } from '../ephemeris/ephemeris.js';
 import dayjs from 'dayjs';
 import OpenAI from 'openai';
 import frLocale from 'dayjs/locale/fr.js';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 dayjs.locale(frLocale);
 
@@ -33,8 +33,7 @@ export async function createEphermerisMessage(client) {
         ],
     });
 
-    // let channel = client.channels.cache.get(process.env.CHANNEL_FETE);
-    let channel = client.channels.cache.get('770588039306018838');
+    let channel = client.channels.cache.get(process.env.CHANNEL_FETE);
     const date = dayjs().format('dddd D MMMM YYYY');
     const embed = {
         color: 0x613bdb,

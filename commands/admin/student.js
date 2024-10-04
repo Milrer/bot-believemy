@@ -1,5 +1,5 @@
 import { setTimeout } from 'timers/promises';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import axios from 'axios';
 import { embedError } from '../../helpers/errorEmbed.js';
 import OpenAI from 'openai';
