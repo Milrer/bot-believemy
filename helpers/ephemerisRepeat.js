@@ -59,7 +59,7 @@ export async function createEphermerisMessage(client) {
 }
 
 export function ephemerisRepeat(client) {
-    cron.schedule('* * * * *', () => {
+    cron.schedule('30 5 * * *', () => {
         createEphermerisMessage(client);
     });
 }
