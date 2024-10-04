@@ -1,7 +1,7 @@
 {
     "name": "bebot",
-    "version": "1.0.0",
-    "description": "",
+    "version": "2.0.0",
+    "description": "Official bot for the discord server of the Believemy Community",
     "main": "main.js",
     "type": "module",
     "scripts": {
@@ -18,7 +18,8 @@
         "dotenv": "^16.3.1",
         "moment": "^2.29.4",
         "moment-timezone": "^0.5.43",
-        "node-cron": "^3.0.2"
+        "node-cron": "^3.0.2",
+        "openai": "^4.67.1"
     },
     "devDependencies": {
         "nodemon": "^3.0.1"
