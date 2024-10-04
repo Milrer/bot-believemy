@@ -4,7 +4,8 @@ import { getTodayEphemerisName } from '../ephemeris/ephemeris.js';
 import dayjs from 'dayjs';
 import OpenAI from 'openai';
 import frLocale from 'dayjs/locale/fr.js';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
+
 dotenv.config();
 dayjs.locale(frLocale);
 
