@@ -25,7 +25,7 @@ export async function createEphermerisMessage(client) {
             {
                 role: 'user',
                 content: `L'éphéméride du jour est ${getTodayEphemerisName()}. Souhaite à tous le monde
-                une bonne journée. Ajoute une anecdote qui s'est passé dans le monde de la tech pour le même jour mais pas la même année. Nous sommes le ${dayjs().format(
+                une bonne journée. Précise chaque jour noir sur blanc la saint du jour pour constaté quelle est la saint à célébrer. Ajoute une anecdote qui s'est passé dans le monde de la tech pour le même jour mais pas la même année. Nous sommes le ${dayjs().format(
                     'dddd D MMMM YYYY'
                 )}. Ajoute des émojis pour rendre le message plus joyeux mais toujours vers la fin d'un paragraphe.
                 Exemple d'anecdotes tech : le 4 octobre 2011, le géant des réseaux sociaux, Facebook, a lancé son service de partage de photos via mobile, permettant aux utilisateurs de télécharger des photos directement depuis leurs smartphones. Ce fut un moment marquant dans l'évolution des réseaux sociaux et a contribué grandement à la popularité des plateformes de partage d'images.
@@ -59,7 +59,7 @@ export async function createEphermerisMessage(client) {
 }
 
 export function ephemerisRepeat(client) {
-    cron.schedule('30 5 * * *', () => {
+    cron.schedule('30 3 * * *', () => {
         createEphermerisMessage(client);
     });
 }
