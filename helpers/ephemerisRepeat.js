@@ -14,25 +14,25 @@ const openai = new OpenAI({
 });
 
 export async function createEphermerisMessage(client) {
-    const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-            {
-                role: 'system',
-                content:
-                    'Tu es un bot Discord. Ton but est de servir avec bienvaillance tout le monde, tu es expert en informatique.',
-            },
-            {
-                role: 'user',
-                content: `L'éphéméride du jour est ${getTodayEphemerisName()}. Souhaite à tous le monde
-                une bonne journée. Précise chaque jour noir sur blanc la saint du jour pour constaté quelle est la saint à célébrer. Ajoute une anecdote qui s'est passé dans le monde de la tech pour le même jour mais pas la même année. Nous sommes le ${dayjs().format(
-                    'dddd D MMMM YYYY'
-                )}. Ajoute des émojis pour rendre le message plus joyeux mais toujours vers la fin d'un paragraphe.
-                Exemple d'anecdotes tech : le 4 octobre 2011, le géant des réseaux sociaux, Facebook, a lancé son service de partage de photos via mobile, permettant aux utilisateurs de télécharger des photos directement depuis leurs smartphones. Ce fut un moment marquant dans l'évolution des réseaux sociaux et a contribué grandement à la popularité des plateformes de partage d'images.
-                Termine en souhaitant une bonne journée à tous. Quand tu parles de toi, utilise la première personne du singulier. Tu t'appelles BeBot.`,
-            },
-        ],
-    });
+    // const completion = await openai.chat.completions.create({
+    //     model: 'gpt-4o-mini',
+    //     messages: [
+    //         {
+    //             role: 'system',
+    //             content:
+    //                 'Tu es un bot Discord. Ton but est de servir avec bienvaillance tout le monde, tu es expert en informatique.',
+    //         },
+    //         {
+    //             role: 'user',
+    //             content: `L'éphéméride du jour est ${getTodayEphemerisName()}. Souhaite à tous le monde
+    //             une bonne journée. Précise chaque jour noir sur blanc la saint du jour pour constaté quelle est la saint à célébrer. Ajoute une anecdote qui s'est passé dans le monde de la tech pour le même jour mais pas la même année. Nous sommes le ${dayjs().format(
+    //                 'dddd D MMMM YYYY'
+    //             )}. Ajoute des émojis pour rendre le message plus joyeux mais toujours vers la fin d'un paragraphe.
+    //             Exemple d'anecdotes tech : le 4 octobre 2011, le géant des réseaux sociaux, Facebook, a lancé son service de partage de photos via mobile, permettant aux utilisateurs de télécharger des photos directement depuis leurs smartphones. Ce fut un moment marquant dans l'évolution des réseaux sociaux et a contribué grandement à la popularité des plateformes de partage d'images.
+    //             Termine en souhaitant une bonne journée à tous. Quand tu parles de toi, utilise la première personne du singulier. Tu t'appelles BeBot.`,
+    //         },
+    //     ],
+    // });
 
     let channel = client.channels.cache.get(process.env.CHANNEL_FETE);
     const date = dayjs().format('dddd D MMMM YYYY');
@@ -46,7 +46,8 @@ export async function createEphermerisMessage(client) {
                 'https://osakalehusky.com/pictures/bebot/bebot-profile.png',
             url: 'https://osakalehusky.com/pictures/bebot/bebot-profile.png',
         },
-        description: completion.choices[0].message.content,
+        // description: completion.choices[0].message.content,
+        description: `Bonjour ! Aujourd'hui, nous célébrons les ${getTodayEphemerisName()} aujourd'hui. Bonne journée à tous !`,
         timestamp: new Date().toISOString(),
         footer: {
             text: `${client.user.username} vous souhaite une agréable journée`,
