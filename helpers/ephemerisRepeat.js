@@ -47,7 +47,7 @@ export async function createEphermerisMessage(client) {
             url: 'https://osakalehusky.com/pictures/bebot/bebot-profile.png',
         },
         // description: completion.choices[0].message.content,
-        description: `Bonjour ! Aujourd'hui, nous célébrons les ${getTodayEphemerisName()} aujourd'hui. Bonne journée à tous !`,
+        description: `Bonjour ! Aujourd'hui, nous célébrons les *${getTodayEphemerisName()}*. Bonne journée à tous !`,
         timestamp: new Date().toISOString(),
         footer: {
             text: `${client.user.username} vous souhaite une agréable journée`,

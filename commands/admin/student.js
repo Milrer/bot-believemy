@@ -23,7 +23,7 @@ export default {
             const member = interaction.member;
             const date = new Date();
             const studentRoleId = process.env.STUDENT_ROLE_ID;
-            const openCampusRoleId = process.env.OPEN_CAMPUS_ROLE_ID;
+            const openCampusRoleId = process.env.OPEN_CAMPUS;
             const channelId = interaction.guild.channels.cache.get(
                 process.env.CHANNEL_SEND_ID
             );
