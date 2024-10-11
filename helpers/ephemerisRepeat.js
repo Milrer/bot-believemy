@@ -1,6 +1,9 @@
 import cron from 'node-cron';
 
-import { getTodayEphemerisName } from '../ephemeris/ephemeris.js';
+import {
+    getTodayEphemerisName,
+    getTodayEphemerisNameWiki,
+} from '../ephemeris/ephemeris.js';
 import dayjs from 'dayjs';
 import OpenAI from 'openai';
 import frLocale from 'dayjs/locale/fr.js';
@@ -39,7 +42,7 @@ export async function createEphermerisMessage(client) {
     const embed = {
         color: 0x613bdb,
         title: `Nous sommes le ${date}`,
-        // url: `https://fr.wikipedia.org/wiki/${getTodayEphemerisNameWiki()}`,
+        url: getTodayEphemerisNameWiki(),
         author: {
             name: `${client.user.username}`,
             icon_url:
