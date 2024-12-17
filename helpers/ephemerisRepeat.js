@@ -53,7 +53,7 @@ export async function createEphermerisMessage(client) {
         // description: completion.choices[0].message.content,
         description: `Bonjour ! Aujourd'hui, nous célébrons ${
             getConditionnal() != '' ? 'les' : ': '
-        } *${getTodayEphemerisName()}* ! Bonne journée à tous !`,
+        } **${getTodayEphemerisName()}** ! Bonne journée à tous !`,
         timestamp: new Date().toISOString(),
         footer: {
             text: `${client.user.username} vous souhaite une agréable journée`,
