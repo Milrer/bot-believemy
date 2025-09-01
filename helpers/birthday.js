@@ -16,7 +16,7 @@ function sendBirthday(channel, embed) {
 }
 
 export function birthday(client) {
-    cron.schedule('45 5 * * * *', async () => {
+    cron.schedule('45 5 * * *', async () => {
         const fondation = client.channels.cache.get(process.env.FONDATION);
         const steveJobs = client.channels.cache.get(process.env.STEVE_JOBS);
         const margaretHalmiton = client.channels.cache.get(
