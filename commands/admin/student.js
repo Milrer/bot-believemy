@@ -43,7 +43,7 @@ export default {
             );
 
             if (member.roles.cache.has(studentRoleId)) {
-                const studentValited = {
+                const studentValidated = {
                     title: '🔥 Vous êtes déja chez nous',
                     color: 0x57f287,
                     description:
@@ -56,7 +56,7 @@ export default {
                     },
                 };
                 await interaction.reply({
-                    embeds: [studentValited],
+                    embeds: [studentValidated],
                     ephemeral: true,
                 });
                 await setTimeout(15000);
@@ -99,7 +99,7 @@ export default {
                         },
                     };
                     const completion = await openai.chat.completions.create({
-                        model: 'gpt-5-nano',
+                        model: 'gpt-4o-mini',
                         messages: [
                             {
                                 role: 'system',
@@ -136,7 +136,11 @@ export default {
                 throw new Error('La requête au webhook à échoué !');
             }
         } catch (error) {
-            embedError(interaction, 'Une erreur est survenue', error.message);
+            embedError({
+                interaction,
+                title: 'Une erreur est survenue',
+                description: error.message,
+            });
         }
     },
 };
