@@ -4,6 +4,7 @@ dotenv.config();
 import { registerEvents } from './helpers/registerEvent.js';
 import { ephemerisRepeat } from './helpers/ephemerisRepeat.js';
 import { birthday } from './helpers/birthday.js';
+import { serverCover } from './helpers/serverCover.js';
 
 const client = new Client({
     intents: 3276799,
@@ -24,5 +25,6 @@ const client = new Client({
 await registerEvents(client);
 ephemerisRepeat(client);
 birthday(client);
+serverCover(client);
 
 await client.login(process.env.TOKEN);
