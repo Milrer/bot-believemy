@@ -1,12 +1,18 @@
 import cron from 'node-cron';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc.js';
+import timezone from 'dayjs/plugin/timezone.js';
 import frLocale from 'dayjs/locale/fr.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.locale(frLocale);
+
+const PARIS_TZ = 'Europe/Paris';
 
 const WORKSHOP_COLOR = 0xe8511d;
 const API_TIMEOUT = 30000;
@@ -14,17 +20,17 @@ const DEFAULT_CHANNEL_ID = process.env.GENERAL_ROCKET;
 const DEFAULT_ROLE_ID = '752104575045206046';
 
 /**
- * Formate une date en français (ex: "Samedi 15 février 2025")
+ * Formate une date en français avec le fuseau horaire de Paris (ex: "Samedi 15 février 2025")
  */
 function formatDateFr(dateStr) {
-    return dayjs(dateStr).format('dddd D MMMM YYYY');
+    return dayjs(dateStr).tz(PARIS_TZ).format('dddd D MMMM YYYY');
 }
 
 /**
- * Formate une heure (ex: "14h00")
+ * Formate une heure avec le fuseau horaire de Paris (ex: "16h00")
  */
 function formatTime(dateStr) {
-    return dayjs(dateStr).format('HH[h]mm');
+    return dayjs(dateStr).tz(PARIS_TZ).format('HH[h]mm');
 }
 
 /**
@@ -76,7 +82,7 @@ function createAnnouncementEmbed(workshop, client) {
                 inline: true,
             },
             {
-                name: 'Horaire',
+                name: 'Horaire (heure de Paris)',
                 value: `${formatTime(workshop.startDate)} - ${formatTime(
                     workshop.endDate
                 )}`,
@@ -123,11 +129,11 @@ function createReminderEmbed(workshop, client) {
         title: "Rappel : votre atelier commence aujourd'hui !",
         description: `**${workshop.title}** commence à ${formatTime(
             workshop.startDate
-        )} !`,
+        )} (heure de Paris) !`,
         thumbnail: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
         fields: [
             {
-                name: 'Horaire',
+                name: 'Horaire (heure de Paris)',
                 value: formatTime(workshop.startDate),
                 inline: true,
             },
@@ -360,12 +366,11 @@ export async function sendWorkshopNotifications(client) {
 }
 
 /**
- * Configure le cron pour les notifications d'ateliers (tous les jours à 11h30)
+ * Configure le cron pour les notifications d'ateliers (tous les jours à 7h UTC)
  */
 export function workshopNotifications(client) {
-    // 10h30 UTC = 11h30 heure française (hiver) / 12h30 (été)
-    cron.schedule('58 10 * * *', () => {
+    cron.schedule('0 7 * * *', () => {
         sendWorkshopNotifications(client);
     });
-    console.log('[WorkshopNotifications] Cron programmé à 11h30 (10h30 UTC).');
+    console.log('[WorkshopNotifications] Cron programmé à 7h (7h UTC).');
 }
