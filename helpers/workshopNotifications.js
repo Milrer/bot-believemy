@@ -9,8 +9,9 @@ dotenv.config();
 dayjs.locale(frLocale);
 
 const WORKSHOP_COLOR = 0xe8511d;
-const ROLE_MENTION = '<@&752104575045206046>';
 const API_TIMEOUT = 30000;
+const DEFAULT_CHANNEL_ID = process.env.GENERAL_ROCKET;
+const DEFAULT_ROLE_ID = '752104575045206046';
 
 /**
  * Formate une date en français (ex: "Samedi 15 février 2025")
@@ -47,6 +48,16 @@ function truncateDescription(description, maxLength = 200) {
     if (!description) return '';
     if (description.length <= maxLength) return description;
     return description.substring(0, maxLength - 3) + '...';
+}
+
+/**
+ * Récupère le channel ID et le role ID pour un atelier
+ */
+function getWorkshopChannelAndRole(workshop) {
+    const channelId =
+        workshop.accelerator?.discordChannelId || DEFAULT_CHANNEL_ID;
+    const roleId = workshop.accelerator?.discordRoleId || DEFAULT_ROLE_ID;
+    return { channelId, roleId };
 }
 
 /**
@@ -191,27 +202,43 @@ function createReplayEmbed(workshop, client) {
 }
 
 /**
+ * Envoie une notification pour un atelier dans le bon channel
+ */
+async function sendWorkshopNotification(client, workshop, createEmbedFn, type) {
+    const { channelId, roleId } = getWorkshopChannelAndRole(workshop);
+    const roleMention = `<@&${roleId}>`;
+
+    const channel = await client.channels.fetch(channelId).catch((err) => {
+        console.error(
+            `[WorkshopNotifications] Erreur récupération du channel ${channelId}: ${err.message}`
+        );
+        return null;
+    });
+
+    if (!channel) {
+        console.error(
+            `[WorkshopNotifications] Channel ${channelId} introuvable pour l'atelier ${workshop.id}`
+        );
+        return null;
+    }
+
+    const { embed, row } = createEmbedFn(workshop, client);
+    await channel.send({
+        content: roleMention,
+        embeds: [embed],
+        components: [row],
+    });
+
+    return { type, workshopId: workshop.id };
+}
+
+/**
  * Envoie les notifications d'ateliers
  */
 export async function sendWorkshopNotifications(client) {
     console.log(
         '[WorkshopNotifications] Démarrage de la vérification des notifications...'
     );
-
-    // Récupération du channel
-    const channel = await client.channels
-        .fetch(process.env.GENERAL_ROCKET)
-        .catch((err) => {
-            console.error(
-                `[WorkshopNotifications] Erreur récupération du channel: ${err.message}`
-            );
-            return null;
-        });
-
-    if (!channel) {
-        console.error('[WorkshopNotifications] Channel introuvable, arrêt.');
-        return;
-    }
 
     // Appel API pour récupérer les notifications
     let notifications;
@@ -242,19 +269,18 @@ export async function sendWorkshopNotifications(client) {
     // Traitement des annonces
     for (const workshop of workshopsToAnnounce) {
         try {
-            const { embed, row } = createAnnouncementEmbed(workshop, client);
-            await channel.send({
-                content: ROLE_MENTION,
-                embeds: [embed],
-                components: [row],
-            });
-            sentNotifications.push({
-                type: 'announcement',
-                workshopId: workshop.id,
-            });
-            console.log(
-                `[WorkshopNotifications] Annonce envoyée pour: ${workshop.title}`
+            const result = await sendWorkshopNotification(
+                client,
+                workshop,
+                createAnnouncementEmbed,
+                'announcement'
             );
+            if (result) {
+                sentNotifications.push(result);
+                console.log(
+                    `[WorkshopNotifications] Annonce envoyée pour: ${workshop.title}`
+                );
+            }
         } catch (error) {
             console.error(
                 `[WorkshopNotifications] Erreur envoi annonce ${workshop.id}: ${error.message}`
@@ -265,19 +291,18 @@ export async function sendWorkshopNotifications(client) {
     // Traitement des rappels
     for (const workshop of workshopsToRemind) {
         try {
-            const { embed, row } = createReminderEmbed(workshop, client);
-            await channel.send({
-                content: ROLE_MENTION,
-                embeds: [embed],
-                components: [row],
-            });
-            sentNotifications.push({
-                type: 'reminder',
-                workshopId: workshop.id,
-            });
-            console.log(
-                `[WorkshopNotifications] Rappel envoyé pour: ${workshop.title}`
+            const result = await sendWorkshopNotification(
+                client,
+                workshop,
+                createReminderEmbed,
+                'reminder'
             );
+            if (result) {
+                sentNotifications.push(result);
+                console.log(
+                    `[WorkshopNotifications] Rappel envoyé pour: ${workshop.title}`
+                );
+            }
         } catch (error) {
             console.error(
                 `[WorkshopNotifications] Erreur envoi rappel ${workshop.id}: ${error.message}`
@@ -288,16 +313,18 @@ export async function sendWorkshopNotifications(client) {
     // Traitement des replays
     for (const workshop of workshopsWithNewReplay) {
         try {
-            const { embed, row } = createReplayEmbed(workshop, client);
-            await channel.send({
-                content: ROLE_MENTION,
-                embeds: [embed],
-                components: [row],
-            });
-            sentNotifications.push({ type: 'replay', workshopId: workshop.id });
-            console.log(
-                `[WorkshopNotifications] Replay envoyé pour: ${workshop.title}`
+            const result = await sendWorkshopNotification(
+                client,
+                workshop,
+                createReplayEmbed,
+                'replay'
             );
+            if (result) {
+                sentNotifications.push(result);
+                console.log(
+                    `[WorkshopNotifications] Replay envoyé pour: ${workshop.title}`
+                );
+            }
         } catch (error) {
             console.error(
                 `[WorkshopNotifications] Erreur envoi replay ${workshop.id}: ${error.message}`
@@ -337,7 +364,7 @@ export async function sendWorkshopNotifications(client) {
  */
 export function workshopNotifications(client) {
     // 10h30 UTC = 11h30 heure française (hiver) / 12h30 (été)
-    cron.schedule('35 10 * * *', () => {
+    cron.schedule('58 10 * * *', () => {
         sendWorkshopNotifications(client);
     });
     console.log('[WorkshopNotifications] Cron programmé à 11h30 (10h30 UTC).');
