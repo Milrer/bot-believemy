@@ -66,7 +66,9 @@ function createAnnouncementEmbed(workshop, client) {
             },
             {
                 name: 'Horaire',
-                value: `${formatTime(workshop.startDate)} - ${formatTime(workshop.endDate)}`,
+                value: `${formatTime(workshop.startDate)} - ${formatTime(
+                    workshop.endDate
+                )}`,
                 inline: true,
             },
             {
@@ -81,14 +83,18 @@ function createAnnouncementEmbed(workshop, client) {
             },
         ],
         footer: {
-            text: `Believemy${workshop.accelerator?.name ? ` • ${workshop.accelerator.name}` : ''}`,
+            text: `Believemy${
+                workshop.accelerator?.name
+                    ? ` • ${workshop.accelerator.name}`
+                    : ''
+            }`,
             icon_url: client.user.displayAvatarURL(),
         },
         timestamp: new Date().toISOString(),
     };
 
     const button = new ButtonBuilder()
-        .setLabel('Rejoindre l\'atelier')
+        .setLabel("Rejoindre l'atelier")
         .setURL(workshop.meetingUrl)
         .setStyle(ButtonStyle.Link);
 
@@ -103,8 +109,10 @@ function createAnnouncementEmbed(workshop, client) {
 function createReminderEmbed(workshop, client) {
     const embed = {
         color: WORKSHOP_COLOR,
-        title: 'Rappel : votre atelier commence aujourd\'hui !',
-        description: `**${workshop.title}** commence à ${formatTime(workshop.startDate)} !`,
+        title: "Rappel : votre atelier commence aujourd'hui !",
+        description: `**${workshop.title}** commence à ${formatTime(
+            workshop.startDate
+        )} !`,
         thumbnail: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
         fields: [
             {
@@ -124,7 +132,11 @@ function createReminderEmbed(workshop, client) {
             },
         ],
         footer: {
-            text: `Believemy${workshop.accelerator?.name ? ` • ${workshop.accelerator.name}` : ''}`,
+            text: `Believemy${
+                workshop.accelerator?.name
+                    ? ` • ${workshop.accelerator.name}`
+                    : ''
+            }`,
             icon_url: client.user.displayAvatarURL(),
         },
         timestamp: new Date().toISOString(),
@@ -147,7 +159,7 @@ function createReplayEmbed(workshop, client) {
     const embed = {
         color: WORKSHOP_COLOR,
         title: `Replay disponible : ${workshop.title}`,
-        description: 'Le replay de l\'atelier est maintenant disponible !',
+        description: "Le replay de l'atelier est maintenant disponible !",
         thumbnail: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
         fields: [
             {
@@ -157,7 +169,11 @@ function createReplayEmbed(workshop, client) {
             },
         ],
         footer: {
-            text: `Believemy${workshop.accelerator?.name ? ` • ${workshop.accelerator.name}` : ''}`,
+            text: `Believemy${
+                workshop.accelerator?.name
+                    ? ` • ${workshop.accelerator.name}`
+                    : ''
+            }`,
             icon_url: client.user.displayAvatarURL(),
         },
         timestamp: new Date().toISOString(),
@@ -178,13 +194,19 @@ function createReplayEmbed(workshop, client) {
  * Envoie les notifications d'ateliers
  */
 export async function sendWorkshopNotifications(client) {
-    console.log('[WorkshopNotifications] Démarrage de la vérification des notifications...');
+    console.log(
+        '[WorkshopNotifications] Démarrage de la vérification des notifications...'
+    );
 
     // Récupération du channel
-    const channel = await client.channels.fetch(process.env.GENERAL_ROCKET).catch((err) => {
-        console.error(`[WorkshopNotifications] Erreur récupération du channel: ${err.message}`);
-        return null;
-    });
+    const channel = await client.channels
+        .fetch(process.env.GENERAL_ROCKET)
+        .catch((err) => {
+            console.error(
+                `[WorkshopNotifications] Erreur récupération du channel: ${err.message}`
+            );
+            return null;
+        });
 
     if (!channel) {
         console.error('[WorkshopNotifications] Channel introuvable, arrêt.');
@@ -204,11 +226,17 @@ export async function sendWorkshopNotifications(client) {
         );
         notifications = response.data;
     } catch (error) {
-        console.error(`[WorkshopNotifications] Erreur appel API: ${error.message}`);
+        console.error(
+            `[WorkshopNotifications] Erreur appel API: ${error.message}`
+        );
         return;
     }
 
-    const { workshopsToAnnounce = [], workshopsToRemind = [], workshopsWithNewReplay = [] } = notifications;
+    const {
+        workshopsToAnnounce = [],
+        workshopsToRemind = [],
+        workshopsWithNewReplay = [],
+    } = notifications;
     const sentNotifications = [];
 
     // Traitement des annonces
@@ -220,10 +248,17 @@ export async function sendWorkshopNotifications(client) {
                 embeds: [embed],
                 components: [row],
             });
-            sentNotifications.push({ type: 'announcement', workshopId: workshop.id });
-            console.log(`[WorkshopNotifications] Annonce envoyée pour: ${workshop.title}`);
+            sentNotifications.push({
+                type: 'announcement',
+                workshopId: workshop.id,
+            });
+            console.log(
+                `[WorkshopNotifications] Annonce envoyée pour: ${workshop.title}`
+            );
         } catch (error) {
-            console.error(`[WorkshopNotifications] Erreur envoi annonce ${workshop.id}: ${error.message}`);
+            console.error(
+                `[WorkshopNotifications] Erreur envoi annonce ${workshop.id}: ${error.message}`
+            );
         }
     }
 
@@ -236,10 +271,17 @@ export async function sendWorkshopNotifications(client) {
                 embeds: [embed],
                 components: [row],
             });
-            sentNotifications.push({ type: 'reminder', workshopId: workshop.id });
-            console.log(`[WorkshopNotifications] Rappel envoyé pour: ${workshop.title}`);
+            sentNotifications.push({
+                type: 'reminder',
+                workshopId: workshop.id,
+            });
+            console.log(
+                `[WorkshopNotifications] Rappel envoyé pour: ${workshop.title}`
+            );
         } catch (error) {
-            console.error(`[WorkshopNotifications] Erreur envoi rappel ${workshop.id}: ${error.message}`);
+            console.error(
+                `[WorkshopNotifications] Erreur envoi rappel ${workshop.id}: ${error.message}`
+            );
         }
     }
 
@@ -253,9 +295,13 @@ export async function sendWorkshopNotifications(client) {
                 components: [row],
             });
             sentNotifications.push({ type: 'replay', workshopId: workshop.id });
-            console.log(`[WorkshopNotifications] Replay envoyé pour: ${workshop.title}`);
+            console.log(
+                `[WorkshopNotifications] Replay envoyé pour: ${workshop.title}`
+            );
         } catch (error) {
-            console.error(`[WorkshopNotifications] Erreur envoi replay ${workshop.id}: ${error.message}`);
+            console.error(
+                `[WorkshopNotifications] Erreur envoi replay ${workshop.id}: ${error.message}`
+            );
         }
     }
 
@@ -273,9 +319,13 @@ export async function sendWorkshopNotifications(client) {
                     timeout: API_TIMEOUT,
                 }
             );
-            console.log(`[WorkshopNotifications] ${sentNotifications.length} notification(s) marquée(s) comme envoyée(s).`);
+            console.log(
+                `[WorkshopNotifications] ${sentNotifications.length} notification(s) marquée(s) comme envoyée(s).`
+            );
         } catch (error) {
-            console.error(`[WorkshopNotifications] Erreur marquage notifications: ${error.message}`);
+            console.error(
+                `[WorkshopNotifications] Erreur marquage notifications: ${error.message}`
+            );
         }
     } else {
         console.log('[WorkshopNotifications] Aucune notification à envoyer.');
@@ -283,12 +333,12 @@ export async function sendWorkshopNotifications(client) {
 }
 
 /**
- * Configure le cron pour les notifications d'ateliers (tous les jours à 8h)
+ * Configure le cron pour les notifications d'ateliers (tous les jours à 11h30)
  */
 export function workshopNotifications(client) {
-    // 7h UTC = 8h heure française (hiver) / 9h (été)
-    cron.schedule('0 7 * * *', () => {
+    // 10h30 UTC = 11h30 heure française (hiver) / 12h30 (été)
+    cron.schedule('30 10 * * *', () => {
         sendWorkshopNotifications(client);
     });
-    console.log('[WorkshopNotifications] Cron programmé à 8h (7h UTC).');
+    console.log('[WorkshopNotifications] Cron programmé à 11h30 (10h30 UTC).');
 }
