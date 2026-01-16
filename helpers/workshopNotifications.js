@@ -337,7 +337,7 @@ export async function sendWorkshopNotifications(client) {
  */
 export function workshopNotifications(client) {
     // 10h30 UTC = 11h30 heure française (hiver) / 12h30 (été)
-    cron.schedule('30 10 * * *', () => {
+    cron.schedule('35 10 * * *', () => {
         sendWorkshopNotifications(client);
     });
     console.log('[WorkshopNotifications] Cron programmé à 11h30 (10h30 UTC).');
