@@ -74,7 +74,7 @@ function createAnnouncementEmbed(workshop, client) {
         color: WORKSHOP_COLOR,
         title: `Nouvel atelier : ${workshop.title}`,
         description: truncateDescription(workshop.description),
-        thumbnail: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
+        image: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
         fields: [
             {
                 name: 'Date',
@@ -130,7 +130,7 @@ function createReminderEmbed(workshop, client) {
         description: `**${workshop.title}** commence à ${formatTime(
             workshop.startDate
         )} (heure de Paris) !`,
-        thumbnail: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
+        image: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
         fields: [
             {
                 name: 'Horaire (heure de Paris)',
@@ -177,7 +177,7 @@ function createReplayEmbed(workshop, client) {
         color: WORKSHOP_COLOR,
         title: `Replay disponible : ${workshop.title}`,
         description: "Le replay de l'atelier est maintenant disponible !",
-        thumbnail: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
+        image: workshop.thumbnail ? { url: workshop.thumbnail } : undefined,
         fields: [
             {
                 name: `${getSpeakerLabel(workshop.speakers)}`,
