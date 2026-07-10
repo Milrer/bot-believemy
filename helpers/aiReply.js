@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import fetch, { Headers, Request, Response } from 'node-fetch';
 import * as dotenv from 'dotenv';
+import { knowledgeBase } from './knowledge.js';
 
 dotenv.config();
 
@@ -26,7 +27,10 @@ Tu es chaleureux, bienveillant et serviable, et tu tutoies les membres.
 Tu es à l'aise avec le développement, le no-code, l'IA et l'entrepreneuriat, mais tu réponds volontiers à toutes les questions.
 Réponds toujours en français, de façon concise et naturelle (évite les pavés).
 Ta réponse ne doit jamais dépasser 2000 caractères (limite Discord).
-Les messages récents du salon te sont fournis pour le contexte : le format « Prénom : message » indique qui a écrit quoi.`;
+Les messages récents du salon te sont fournis pour le contexte : le format « Prénom : message » indique qui a écrit quoi.
+
+Une base de connaissances sur Believemy, son créateur et le support t'est fournie plus bas. Appuie-toi dessus en priorité pour répondre.
+Si une information ne s'y trouve pas et que tu n'es pas certain, ne l'invente jamais : dis-le honnêtement et invite la personne à contacter le support humain. Les passages notés « [À COMPLÉTER] » ne sont pas encore renseignés : traite-les comme des informations que tu ne connais pas.`;
 
 // Nombre de messages récents récupérés pour donner du contexte au modèle
 const HISTORY_LIMIT = 10;
@@ -81,10 +85,20 @@ export const aiReply = async (message) => {
         }
         if (!messages.length) return;
 
+        // Bloc système : persona + base de connaissances (mise en cache pour l'économie)
+        const system = [{ type: 'text', text: SYSTEM_PROMPT }];
+        if (knowledgeBase) {
+            system.push({
+                type: 'text',
+                text: `# Base de connaissances\n\n${knowledgeBase}`,
+                cache_control: { type: 'ephemeral' },
+            });
+        }
+
         const response = await anthropic.messages.create({
             model: MODEL,
             max_tokens: 1024,
-            system: SYSTEM_PROMPT,
+            system,
             messages,
         });
 
