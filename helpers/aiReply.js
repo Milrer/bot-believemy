@@ -58,6 +58,56 @@ const PUBLIC_ACCESS_TOOL = {
     },
 };
 
+// Outil de contexte : Claude peut demander plus de messages du salon (jusqu'à 100)
+const FETCH_MESSAGES_TOOL = {
+    name: 'fetch_more_messages',
+    description:
+        'Récupère davantage de messages récents du salon pour avoir plus de contexte. ' +
+        'Utilise-le quand tu as besoin de remonter plus loin dans la conversation pour bien répondre — ' +
+        'par exemple pour répondre à plusieurs questions posées plus haut ou donner un avis sur une discussion. ' +
+        'Maximum 100 messages.',
+    input_schema: {
+        type: 'object',
+        properties: {
+            limit: {
+                type: 'integer',
+                description:
+                    'Nombre de messages récents à récupérer (entre 1 et 100).',
+                minimum: 1,
+                maximum: 100,
+            },
+        },
+        required: ['limit'],
+    },
+};
+
+/**
+ * Récupère jusqu'à 100 messages récents du salon, formatés pour le modèle.
+ */
+async function fetchMoreMessages(message, requestedLimit) {
+    const limit = Math.min(Math.max(parseInt(requestedLimit, 10) || 50, 1), 100);
+    try {
+        const fetched = await message.channel.messages.fetch({ limit });
+        const text = [...fetched.values()]
+            .reverse() // du plus ancien au plus récent
+            .map((m) => {
+                const content = m.cleanContent?.trim();
+                if (!content) return null;
+                const name =
+                    m.author.id === message.client.user.id
+                        ? 'BeBot'
+                        : m.member?.displayName || m.author.username;
+                return `${name} : ${content}`;
+            })
+            .filter(Boolean)
+            .join('\n');
+        return text || 'Aucun message supplémentaire trouvé.';
+    } catch (error) {
+        console.error('Erreur fetch_more_messages :', error.message);
+        return 'Impossible de récupérer plus de messages pour le moment.';
+    }
+}
+
 /**
  * Répond via l'IA lorsqu'un membre autorisé mentionne le bot.
  * Ne fait rien si aucun rôle n'est configuré ou si l'auteur n'a pas ce rôle.
@@ -134,8 +184,9 @@ export const aiReply = async (message) => {
             });
         }
 
-        // L'outil d'administration n'est proposé qu'aux administrateurs
-        const tools = isAdmin ? [PUBLIC_ACCESS_TOOL] : undefined;
+        // Outils : le contexte étendu pour tous, l'administration pour les admins
+        const tools = [FETCH_MESSAGES_TOOL];
+        if (isAdmin) tools.push(PUBLIC_ACCESS_TOOL);
 
         let response = await anthropic.messages.create({
             model: MODEL,
@@ -145,14 +196,18 @@ export const aiReply = async (message) => {
             ...(tools && { tools }),
         });
 
-        // Claude peut demander à exécuter l'outil d'administration : on boucle
-        while (response.stop_reason === 'tool_use') {
+        // Claude peut demander à exécuter un outil : on boucle (limite de sécurité)
+        let turns = 0;
+        while (response.stop_reason === 'tool_use' && turns < 5) {
+            turns++;
             messages.push({ role: 'assistant', content: response.content });
             const toolResults = [];
             for (const block of response.content) {
                 if (block.type !== 'tool_use') continue;
-                let result = 'Action non autorisée.';
-                if (block.name === 'set_public_access' && isAdmin) {
+                let result = 'Action non reconnue.';
+                if (block.name === 'fetch_more_messages') {
+                    result = await fetchMoreMessages(message, block.input?.limit);
+                } else if (block.name === 'set_public_access' && isAdmin) {
                     const enabled = Boolean(block.input?.enabled);
                     setOpenToAll(enabled);
                     result = enabled
