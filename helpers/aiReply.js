@@ -2,7 +2,13 @@ import Anthropic from '@anthropic-ai/sdk';
 import fetch, { Headers, Request, Response } from 'node-fetch';
 import * as dotenv from 'dotenv';
 import { knowledgeBase } from './knowledge.js';
-import { isOpenToAll, setOpenToAll } from './settings.js';
+import {
+    isOpenToAll,
+    setOpenToAll,
+    isBlocked,
+    blockUser,
+    unblockUser,
+} from './settings.js';
 
 dotenv.config();
 
@@ -38,6 +44,30 @@ Tu peux ouvrir ou fermer l'accès public à toi-même (le mode « ouvert à tout
 // Nombre de messages récents récupérés pour donner du contexte au modèle
 const HISTORY_LIMIT = 10;
 
+// Anti-spam : seuils et historique en mémoire des sollicitations par membre
+const RATE_WINDOW_MS = 60 * 1000; // fenêtre de 1 minute
+const RATE_MAX = 10; // 10 réponses / minute maximum
+const BAN_WINDOW_MS = 3 * 60 * 1000; // fenêtre de 3 minutes
+const BAN_MAX = 30; // > 30 sollicitations / 3 min → exclusion
+const mentionTimes = new Map(); // userId → timestamps récents
+
+/**
+ * Enregistre une sollicitation et renvoie le statut anti-spam de l'utilisateur.
+ * @returns {'ok' | 'rate_limited' | 'ban'}
+ */
+function checkSpam(userId, now) {
+    const times = (mentionTimes.get(userId) || []).filter(
+        (t) => now - t < BAN_WINDOW_MS
+    );
+    times.push(now);
+    mentionTimes.set(userId, times);
+
+    if (times.length > BAN_MAX) return 'ban';
+    const recent = times.filter((t) => now - t < RATE_WINDOW_MS).length;
+    if (recent > RATE_MAX) return 'rate_limited';
+    return 'ok';
+}
+
 // Outil d'administration : permet à Claude de piloter l'accès public sur demande
 const PUBLIC_ACCESS_TOOL = {
     name: 'set_public_access',
@@ -55,6 +85,18 @@ const PUBLIC_ACCESS_TOOL = {
             },
         },
         required: ['enabled'],
+    },
+};
+
+// Outil d'administration : réintégrer une personne exclue (anti-spam)
+const UNBLOCK_USER_TOOL = {
+    name: 'unblock_user',
+    description:
+        "Retire de la liste d'exclusion (blacklist anti-spam) la ou les personnes mentionnées dans le message. " +
+        'Utilise cet outil quand un administrateur demande de débloquer ou réintégrer un membre.',
+    input_schema: {
+        type: 'object',
+        properties: {},
     },
 };
 
@@ -157,6 +199,11 @@ export const aiReply = async (message) => {
         return;
     }
 
+    // Membre exclu (anti-spam) → ignoré totalement, sauf s'il est admin
+    if (!isAdmin && isBlocked(message.author.id)) {
+        return;
+    }
+
     // Mode restreint : on applique le contrôle du rôle
     if (!openToAll && !isAdmin) {
         // Rôle non configuré → on ignore
@@ -169,6 +216,29 @@ export const aiReply = async (message) => {
                 await message.react('🔒');
             } catch (error) {
                 console.error('Erreur réaction BeBot :', error);
+            }
+            return;
+        }
+    }
+
+    // Anti-spam : rate limit et exclusion automatique (les admins sont exemptés)
+    if (!isAdmin) {
+        const status = checkSpam(message.author.id, Date.now());
+        if (status === 'ban') {
+            blockUser(message.author.id);
+            message
+                .reply({
+                    content:
+                        'Tu envoies trop de messages 😅 Tu es temporairement exclu de BeBot. Un administrateur pourra te réintégrer.',
+                })
+                .catch(() => {});
+            return;
+        }
+        if (status === 'rate_limited') {
+            try {
+                await message.react('⏳');
+            } catch (error) {
+                console.error('Erreur réaction rate limit :', error);
             }
             return;
         }
@@ -214,7 +284,7 @@ export const aiReply = async (message) => {
 
         // Outils : le contexte étendu pour tous, l'administration pour les admins
         const tools = [FETCH_MESSAGES_TOOL];
-        if (isAdmin) tools.push(PUBLIC_ACCESS_TOOL);
+        if (isAdmin) tools.push(PUBLIC_ACCESS_TOOL, UNBLOCK_USER_TOOL);
 
         let response = await anthropic.messages.create({
             model: MODEL,
@@ -243,6 +313,20 @@ export const aiReply = async (message) => {
                     result = enabled
                         ? "Fait : l'accès est maintenant ouvert à tout le monde."
                         : "Fait : l'accès est de nouveau réservé aux membres autorisés.";
+                    actionConfirmation = result;
+                } else if (block.name === 'unblock_user' && isAdmin) {
+                    const targets = [...message.mentions.users.keys()].filter(
+                        (id) => id !== message.client.user.id
+                    );
+                    if (targets.length === 0) {
+                        result =
+                            'Aucune personne mentionnée. Mentionne la personne à débloquer (ex. @Nico).';
+                    } else {
+                        const done = targets.filter((id) => unblockUser(id));
+                        result = done.length
+                            ? `Débloqué : ${done.map((id) => `<@${id}>`).join(', ')}.`
+                            : "Ces personnes n'étaient pas dans la liste d'exclusion.";
+                    }
                     actionConfirmation = result;
                 }
                 toolResults.push({
