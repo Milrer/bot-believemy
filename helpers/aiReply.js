@@ -10,6 +10,12 @@ import {
     unblockUser,
 } from './settings.js';
 import { getMemory, addMemory, clearMemory } from './memory.js';
+import {
+    recordUsage,
+    recordResponse,
+    recordWebSearches,
+    formatStats,
+} from './stats.js';
 
 dotenv.config();
 
@@ -127,6 +133,18 @@ const FORGET_TOOL = {
     description:
         'Efface tout ce que tu as mémorisé sur le membre qui te parle. ' +
         'Utilise-le quand il demande que tu oublies ce que tu sais sur lui.',
+    input_schema: {
+        type: 'object',
+        properties: {},
+    },
+};
+
+// Outil d'administration : statistiques d'usage et coût de BeBot
+const USAGE_STATS_TOOL = {
+    name: 'usage_stats',
+    description:
+        "Affiche les statistiques d'usage de BeBot (réponses, tokens, coût estimé). " +
+        "Utilise cet outil quand un administrateur demande les stats, l'usage ou le coût de BeBot.",
     input_schema: {
         type: 'object',
         properties: {},
@@ -337,15 +355,29 @@ export const aiReply = async (message) => {
             REMEMBER_TOOL,
             FORGET_TOOL,
         ];
-        if (isAdmin) tools.push(PUBLIC_ACCESS_TOOL, UNBLOCK_USER_TOOL);
+        if (isAdmin)
+            tools.push(PUBLIC_ACCESS_TOOL, UNBLOCK_USER_TOOL, USAGE_STATS_TOOL);
 
-        let response = await anthropic.messages.create({
-            model: MODEL,
-            max_tokens: 1024,
-            system,
-            messages,
-            ...(tools && { tools }),
-        });
+        // Appel centralisé : suit l'usage (tokens + recherches web) à chaque requête
+        const callClaude = async () => {
+            const r = await anthropic.messages.create({
+                model: MODEL,
+                max_tokens: 1024,
+                system,
+                messages,
+                ...(tools && { tools }),
+            });
+            recordUsage(r.usage);
+            recordWebSearches(
+                r.content.filter(
+                    (b) =>
+                        b.type === 'server_tool_use' && b.name === 'web_search'
+                ).length
+            );
+            return r;
+        };
+
+        let response = await callClaude();
 
         // Claude peut demander à exécuter un outil : on boucle (limite de sécurité).
         // actionConfirmation garantit un retour même si le modèle ne conclut pas par du texte.
@@ -361,13 +393,7 @@ export const aiReply = async (message) => {
 
             // Recherche web (server tool) : Anthropic reprend, rien à exécuter côté client
             if (response.stop_reason === 'pause_turn') {
-                response = await anthropic.messages.create({
-                    model: MODEL,
-                    max_tokens: 1024,
-                    system,
-                    messages,
-                    ...(tools && { tools }),
-                });
+                response = await callClaude();
                 continue;
             }
 
@@ -405,6 +431,9 @@ export const aiReply = async (message) => {
                     clearMemory(message.author.id);
                     result = "J'ai tout oublié à ton sujet.";
                     actionConfirmation = result;
+                } else if (block.name === 'usage_stats' && isAdmin) {
+                    result = formatStats();
+                    actionConfirmation = result;
                 }
                 toolResults.push({
                     type: 'tool_result',
@@ -414,13 +443,7 @@ export const aiReply = async (message) => {
             }
             messages.push({ role: 'user', content: toolResults });
 
-            response = await anthropic.messages.create({
-                model: MODEL,
-                max_tokens: 1024,
-                system,
-                messages,
-                ...(tools && { tools }),
-            });
+            response = await callClaude();
         }
 
         const reply = response.content
@@ -433,6 +456,7 @@ export const aiReply = async (message) => {
         const finalText = reply || actionConfirmation;
 
         if (finalText) {
+            recordResponse();
             // parse: ['users'] → BeBot peut taguer des membres, jamais @everyone ni un rôle
             const allowedMentions = { parse: ['users'], repliedUser: false };
             const chunks = splitMessage(finalText);
