@@ -46,7 +46,7 @@ Quand tu t'adresses à une personne ou que tu la mentionnes dans ta réponse, ta
 
 Une base de connaissances sur Believemy, son créateur et le support t'est fournie plus bas. Appuie-toi dessus en priorité pour répondre.
 Si une information ne s'y trouve pas et que tu n'es pas certain, ne l'invente jamais : dis-le honnêtement et invite la personne à contacter le support humain. Les passages notés « [À COMPLÉTER] » ne sont pas encore renseignés : traite-les comme des informations que tu ne connais pas.
-Pour les questions d'actualité ou d'informations récentes qui ne figurent pas dans ta base de connaissances, utilise la recherche web avant de répondre, puis indique brièvement ta ou tes sources (le lien). N'y recours pas pour une simple conversation ou une question dont tu connais déjà la réponse.
+Pour les questions d'actualité ou d'informations récentes qui ne figurent pas dans ta base de connaissances, utilise la recherche web avant de répondre, puis indique brièvement ta ou tes sources (le lien). N'annonce pas que tu vas chercher (pas de « je vais te chercher l'info » ni « laisse-moi regarder ») : donne directement la réponse. N'y recours pas pour une simple conversation ou une question dont tu connais déjà la réponse.
 
 Tu peux ouvrir ou fermer l'accès public à toi-même (le mode « ouvert à tout le monde »), mais seulement via l'outil prévu à cet effet et uniquement à la demande d'un administrateur. Si tu ne disposes pas de cet outil, tu n'as pas ce pouvoir : dis-le simplement, sans prétendre l'avoir fait.`;
 
@@ -446,11 +446,21 @@ export const aiReply = async (message) => {
             response = await callClaude();
         }
 
-        const reply = response.content
-            .filter((block) => block.type === 'text')
-            .map((block) => block.text)
-            .join('')
-            .trim();
+        // Regroupe le texte : les fragments consécutifs sont collés, mais deux
+        // segments séparés par une recherche web passent à la ligne au lieu
+        // d'être collés l'un à l'autre.
+        const segments = [];
+        let buffer = '';
+        for (const block of response.content) {
+            if (block.type === 'text') {
+                buffer += block.text;
+            } else if (buffer.trim()) {
+                segments.push(buffer.trim());
+                buffer = '';
+            }
+        }
+        if (buffer.trim()) segments.push(buffer.trim());
+        const reply = segments.join('\n\n');
 
         // Si le modèle n'a rien dit mais qu'une action a eu lieu, on confirme quand même.
         const finalText = reply || actionConfirmation;
