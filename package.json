@@ -12,6 +12,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@anthropic-ai/sdk": "^0.110.0",
         "axios": "^1.5.0",
         "dayjs": "^1.11.9",
         "discord.js": "^14.13.0",

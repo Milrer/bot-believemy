@@ -1,5 +1,6 @@
 import { Events } from 'discord.js';
 import { blacklist } from '../../blacklist/blacklist.js';
+import { aiReply } from '../../helpers/aiReply.js';
 
 export default {
     name: Events.MessageCreate,
@@ -23,6 +24,11 @@ export default {
                 .then((msg) => {
                     setTimeout(() => msg.delete(), 5000);
                 });
+        }
+
+        // Réponse IA quand un membre autorisé mentionne le bot
+        if (message.mentions.users.has(message.client.user.id)) {
+            return aiReply(message);
         }
     },
 };
