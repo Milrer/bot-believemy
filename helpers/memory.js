@@ -6,7 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const dataDir = join(__dirname, '..', 'data');
 const memoryPath = join(dataDir, 'memory.json');
 
-const MAX_FACTS = 20; // nombre max de faits mémorisés par membre
+const MAX_FACTS = 100; // nombre max de faits mémorisés par membre
 
 /**
  * Mémoire long terme par membre, persistée dans data/memory.json
