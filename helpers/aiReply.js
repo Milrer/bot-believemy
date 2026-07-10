@@ -39,6 +39,7 @@ Quand tu t'adresses à une personne ou que tu la mentionnes dans ta réponse, ta
 
 Une base de connaissances sur Believemy, son créateur et le support t'est fournie plus bas. Appuie-toi dessus en priorité pour répondre.
 Si une information ne s'y trouve pas et que tu n'es pas certain, ne l'invente jamais : dis-le honnêtement et invite la personne à contacter le support humain. Les passages notés « [À COMPLÉTER] » ne sont pas encore renseignés : traite-les comme des informations que tu ne connais pas.
+Pour les questions d'actualité ou d'informations récentes qui ne figurent pas dans ta base de connaissances, utilise la recherche web avant de répondre, puis indique brièvement ta ou tes sources (le lien). N'y recours pas pour une simple conversation ou une question dont tu connais déjà la réponse.
 
 Tu peux ouvrir ou fermer l'accès public à toi-même (le mode « ouvert à tout le monde »), mais seulement via l'outil prévu à cet effet et uniquement à la demande d'un administrateur. Si tu ne disposes pas de cet outil, tu n'as pas ce pouvoir : dis-le simplement, sans prétendre l'avoir fait.`;
 
@@ -286,8 +287,11 @@ export const aiReply = async (message) => {
             });
         }
 
-        // Outils : le contexte étendu pour tous, l'administration pour les admins
-        const tools = [FETCH_MESSAGES_TOOL];
+        // Outils : contexte étendu + recherche web pour tous, administration pour les admins
+        const tools = [
+            FETCH_MESSAGES_TOOL,
+            { type: 'web_search_20250305', name: 'web_search', max_uses: 3 },
+        ];
         if (isAdmin) tools.push(PUBLIC_ACCESS_TOOL, UNBLOCK_USER_TOOL);
 
         let response = await anthropic.messages.create({
@@ -302,9 +306,26 @@ export const aiReply = async (message) => {
         // actionConfirmation garantit un retour même si le modèle ne conclut pas par du texte.
         let actionConfirmation = null;
         let turns = 0;
-        while (response.stop_reason === 'tool_use' && turns < 5) {
+        while (
+            (response.stop_reason === 'tool_use' ||
+                response.stop_reason === 'pause_turn') &&
+            turns < 5
+        ) {
             turns++;
             messages.push({ role: 'assistant', content: response.content });
+
+            // Recherche web (server tool) : Anthropic reprend, rien à exécuter côté client
+            if (response.stop_reason === 'pause_turn') {
+                response = await anthropic.messages.create({
+                    model: MODEL,
+                    max_tokens: 1024,
+                    system,
+                    messages,
+                    ...(tools && { tools }),
+                });
+                continue;
+            }
+
             const toolResults = [];
             for (const block of response.content) {
                 if (block.type !== 'tool_use') continue;
