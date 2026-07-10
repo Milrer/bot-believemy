@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import fetch, { Headers, Request, Response } from 'node-fetch';
 import * as dotenv from 'dotenv';
 import { knowledgeBase } from './knowledge.js';
+import { isOpenToAll, setOpenToAll } from './settings.js';
 
 dotenv.config();
 
@@ -30,20 +31,48 @@ Ta réponse ne doit jamais dépasser 2000 caractères (limite Discord).
 Les messages récents du salon te sont fournis pour le contexte : le format « Prénom : message » indique qui a écrit quoi.
 
 Une base de connaissances sur Believemy, son créateur et le support t'est fournie plus bas. Appuie-toi dessus en priorité pour répondre.
-Si une information ne s'y trouve pas et que tu n'es pas certain, ne l'invente jamais : dis-le honnêtement et invite la personne à contacter le support humain. Les passages notés « [À COMPLÉTER] » ne sont pas encore renseignés : traite-les comme des informations que tu ne connais pas.`;
+Si une information ne s'y trouve pas et que tu n'es pas certain, ne l'invente jamais : dis-le honnêtement et invite la personne à contacter le support humain. Les passages notés « [À COMPLÉTER] » ne sont pas encore renseignés : traite-les comme des informations que tu ne connais pas.
+
+Tu peux ouvrir ou fermer l'accès public à toi-même (le mode « ouvert à tout le monde »), mais seulement via l'outil prévu à cet effet et uniquement à la demande d'un administrateur. Si tu ne disposes pas de cet outil, tu n'as pas ce pouvoir : dis-le simplement, sans prétendre l'avoir fait.`;
 
 // Nombre de messages récents récupérés pour donner du contexte au modèle
 const HISTORY_LIMIT = 10;
+
+// Outil d'administration : permet à Claude de piloter l'accès public sur demande
+const PUBLIC_ACCESS_TOOL = {
+    name: 'set_public_access',
+    description:
+        "Active ou désactive l'accès public à BeBot (mode « ouvert à tout le monde »). " +
+        "Utilise cet outil uniquement quand un administrateur te demande explicitement d'ouvrir ou de fermer l'accès à tous. " +
+        "Ne l'utilise pas pour une simple question sur l'état de l'accès.",
+    input_schema: {
+        type: 'object',
+        properties: {
+            enabled: {
+                type: 'boolean',
+                description:
+                    "true pour ouvrir l'accès à tout le monde, false pour le réserver aux membres autorisés.",
+            },
+        },
+        required: ['enabled'],
+    },
+};
 
 /**
  * Répond via l'IA lorsqu'un membre autorisé mentionne le bot.
  * Ne fait rien si aucun rôle n'est configuré ou si l'auteur n'a pas ce rôle.
  */
 export const aiReply = async (message) => {
-    // Mode « ouvert à tous » : si activé, tout le monde peut parler à BeBot
-    // (on saute le contrôle du rôle). Sinon, accès réservé au rôle configuré.
-    const openToAll = process.env.BEBOT_OPEN_TO_ALL?.toUpperCase() === 'ON';
+    // Mode « ouvert à tous » : si activé, tout le monde peut parler à BeBot.
+    // Sinon, accès réservé au rôle configuré — mais les administrateurs passent
+    // toujours, pour pouvoir piloter le bot.
+    const openToAll = isOpenToAll();
     const roleId = process.env.BEBOT_AI_ROLE_ID;
+    const adminIds = (process.env.BEBOT_ADMIN_ID || '')
+        .split(',')
+        .map((id) => id.trim())
+        .filter(Boolean);
+    const isAdmin = adminIds.includes(message.author.id);
 
     // Message hors serveur (DM) → on ignore
     if (!message.member) {
@@ -51,7 +80,7 @@ export const aiReply = async (message) => {
     }
 
     // Mode restreint : on applique le contrôle du rôle
-    if (!openToAll) {
+    if (!openToAll && !isAdmin) {
         // Rôle non configuré → on ignore
         if (!roleId) {
             return;
@@ -105,12 +134,47 @@ export const aiReply = async (message) => {
             });
         }
 
-        const response = await anthropic.messages.create({
+        // L'outil d'administration n'est proposé qu'aux administrateurs
+        const tools = isAdmin ? [PUBLIC_ACCESS_TOOL] : undefined;
+
+        let response = await anthropic.messages.create({
             model: MODEL,
             max_tokens: 1024,
             system,
             messages,
+            ...(tools && { tools }),
         });
+
+        // Claude peut demander à exécuter l'outil d'administration : on boucle
+        while (response.stop_reason === 'tool_use') {
+            messages.push({ role: 'assistant', content: response.content });
+            const toolResults = [];
+            for (const block of response.content) {
+                if (block.type !== 'tool_use') continue;
+                let result = 'Action non autorisée.';
+                if (block.name === 'set_public_access' && isAdmin) {
+                    const enabled = Boolean(block.input?.enabled);
+                    setOpenToAll(enabled);
+                    result = enabled
+                        ? "Fait : l'accès est maintenant ouvert à tout le monde."
+                        : "Fait : l'accès est de nouveau réservé aux membres autorisés.";
+                }
+                toolResults.push({
+                    type: 'tool_result',
+                    tool_use_id: block.id,
+                    content: result,
+                });
+            }
+            messages.push({ role: 'user', content: toolResults });
+
+            response = await anthropic.messages.create({
+                model: MODEL,
+                max_tokens: 1024,
+                system,
+                messages,
+                ...(tools && { tools }),
+            });
+        }
 
         const reply = response.content
             .filter((block) => block.type === 'text')
