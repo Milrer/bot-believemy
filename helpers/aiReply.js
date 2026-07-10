@@ -34,7 +34,8 @@ Tu es chaleureux, bienveillant et serviable, et tu tutoies les membres.
 Tu es à l'aise avec le développement, le no-code, l'IA et l'entrepreneuriat, mais tu réponds volontiers à toutes les questions.
 Réponds toujours en français, de façon concise et naturelle (évite les pavés).
 Ta réponse ne doit jamais dépasser 2000 caractères (limite Discord).
-Les messages récents du salon te sont fournis pour le contexte : le format « Prénom : message » indique qui a écrit quoi.
+Les messages récents du salon te sont fournis pour le contexte : le format « Prénom (<@identifiant>) : message » indique qui a écrit quoi.
+Quand tu t'adresses à une personne ou que tu la mentionnes dans ta réponse, tague-la avec son identifiant au format <@identifiant> (celui entre parenthèses après son prénom) pour qu'elle reçoive une notification. Tu peux taguer plusieurs personnes si besoin.
 
 Une base de connaissances sur Believemy, son créateur et le support t'est fournie plus bas. Appuie-toi dessus en priorité pour répondre.
 Si une information ne s'y trouve pas et que tu n'es pas certain, ne l'invente jamais : dis-le honnêtement et invite la personne à contacter le support humain. Les passages notés « [À COMPLÉTER] » ne sont pas encore renseignés : traite-les comme des informations que tu ne connais pas.
@@ -135,11 +136,11 @@ async function fetchMoreMessages(message, requestedLimit) {
             .map((m) => {
                 const content = m.cleanContent?.trim();
                 if (!content) return null;
-                const name =
-                    m.author.id === message.client.user.id
-                        ? 'BeBot'
-                        : m.member?.displayName || m.author.username;
-                return `${name} : ${content}`;
+                if (m.author.id === message.client.user.id) {
+                    return `BeBot : ${content}`;
+                }
+                const name = m.member?.displayName || m.author.username;
+                return `${name} (<@${m.author.id}>) : ${content}`;
             })
             .filter(Boolean)
             .join('\n');
@@ -262,7 +263,10 @@ export const aiReply = async (message) => {
                     return { role: 'assistant', content };
                 }
                 const name = m.member?.displayName || m.author.username;
-                return { role: 'user', content: `${name} : ${content}` };
+                return {
+                    role: 'user',
+                    content: `${name} (<@${m.author.id}>) : ${content}`,
+                };
             })
             .filter(Boolean);
 
@@ -356,10 +360,20 @@ export const aiReply = async (message) => {
         const finalText = reply || actionConfirmation;
 
         if (finalText) {
+            // parse: ['users'] → BeBot peut taguer des membres, jamais @everyone ni un rôle
+            const allowedMentions = { parse: ['users'], repliedUser: false };
             const chunks = splitMessage(finalText);
             for (let i = 0; i < chunks.length; i++) {
-                if (i === 0) await message.reply({ content: chunks[i] });
-                else await message.channel.send({ content: chunks[i] });
+                if (i === 0)
+                    await message.reply({
+                        content: chunks[i],
+                        allowedMentions,
+                    });
+                else
+                    await message.channel.send({
+                        content: chunks[i],
+                        allowedMentions,
+                    });
             }
         }
     } catch (error) {
