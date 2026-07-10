@@ -1,10 +1,31 @@
 # FAQ / Support
 
 Ce fichier regroupe les questions fréquentes et la réponse que BeBot doit donner.
-Ajoute une section « ## » par question ; BeBot s'en servira mot pour mot comme source.
 
 ## Comment contacter le support humain ?
-[À COMPLÉTER : email, salon Discord ou formulaire de contact vers lequel orienter les membres quand BeBot ne peut pas aider.]
 
-## [Exemple : Comment m'abonner / accéder aux formations ?]
-[À COMPLÉTER : la réponse que BeBot doit donner. Duplique ce bloc pour chaque nouvelle question.]
+On peut contacter le support humain sur hello@believemy.com
+
+## Comment m'abonner / accéder aux formations ?
+
+Tout est disponible sur https://believemy.com/fr/tarifs
+
+## Comment rejoindre un accélérateur / une formation professionnalisante ?
+
+Tout est sur https://believemy.com/fr/accelerateurs
+
+## Peut-on devenir formateur pour Believemy ?
+
+Oui, bien sûr, c'est possible. Tout est sur https://believemy.com/fr/devenir-formateur
+
+## Peut-on devenir mentor pour Believemy ?
+
+Oui, bien sûr, c'est possible. Tout est sur https://believemy.com/fr/devenir-mentor
+
+## Comment je peux voir toute l'histoire de BelieveMy depuis sa création ?
+
+Toute l'histoire est sur https://believemy.com/fr/presse
+
+## Quelles sont les dernières nouveautés de Believemy ?
+
+Tout est dispo sur https://believemy.com/fr/nouveautes
