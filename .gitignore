@@ -4,3 +4,5 @@ package-lock.json
 .vsc
 .env
 data/settings.json
+data/memory.json
+data/stats.json

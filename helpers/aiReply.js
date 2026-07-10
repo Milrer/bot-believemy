@@ -9,6 +9,7 @@ import {
     blockUser,
     unblockUser,
 } from './settings.js';
+import { getMemory, addMemory, clearMemory } from './memory.js';
 
 dotenv.config();
 
@@ -96,6 +97,36 @@ const UNBLOCK_USER_TOOL = {
     description:
         "Retire de la liste d'exclusion (blacklist anti-spam) la ou les personnes mentionnées dans le message. " +
         'Utilise cet outil quand un administrateur demande de débloquer ou réintégrer un membre.',
+    input_schema: {
+        type: 'object',
+        properties: {},
+    },
+};
+
+// Outils de mémoire : retenir / oublier des informations sur un membre
+const REMEMBER_TOOL = {
+    name: 'remember',
+    description:
+        "Mémorise durablement une information qu'un membre te communique sur lui-même (prénom, préférences, projet en cours, etc.) pour t'en souvenir lors de vos prochaines conversations. " +
+        "Utilise-le dès qu'un membre te donne une information personnelle à retenir.",
+    input_schema: {
+        type: 'object',
+        properties: {
+            fact: {
+                type: 'string',
+                description:
+                    "L'information à retenir, formulée brièvement à la 3e personne (ex. « s'appelle Nico », « apprend le no-code »).",
+            },
+        },
+        required: ['fact'],
+    },
+};
+
+const FORGET_TOOL = {
+    name: 'forget',
+    description:
+        'Efface tout ce que tu as mémorisé sur le membre qui te parle. ' +
+        'Utilise-le quand il demande que tu oublies ce que tu sais sur lui.',
     input_schema: {
         type: 'object',
         properties: {},
@@ -287,10 +318,24 @@ export const aiReply = async (message) => {
             });
         }
 
+        // Mémoire du membre qui parle (ajoutée après le cache → sans l'invalider)
+        const userFacts = getMemory(message.author.id);
+        if (userFacts.length) {
+            const who = message.member?.displayName || message.author.username;
+            system.push({
+                type: 'text',
+                text: `# Ce que tu sais déjà sur ${who} (la personne qui te parle)\n${userFacts
+                    .map((f) => `- ${f}`)
+                    .join('\n')}`,
+            });
+        }
+
         // Outils : contexte étendu + recherche web pour tous, administration pour les admins
         const tools = [
             FETCH_MESSAGES_TOOL,
             { type: 'web_search_20250305', name: 'web_search', max_uses: 3 },
+            REMEMBER_TOOL,
+            FORGET_TOOL,
         ];
         if (isAdmin) tools.push(PUBLIC_ACCESS_TOOL, UNBLOCK_USER_TOOL);
 
@@ -352,6 +397,13 @@ export const aiReply = async (message) => {
                             ? `Débloqué : ${done.map((id) => `<@${id}>`).join(', ')}.`
                             : "Ces personnes n'étaient pas dans la liste d'exclusion.";
                     }
+                    actionConfirmation = result;
+                } else if (block.name === 'remember') {
+                    addMemory(message.author.id, block.input?.fact);
+                    result = "C'est noté, je m'en souviendrai.";
+                } else if (block.name === 'forget') {
+                    clearMemory(message.author.id);
+                    result = "J'ai tout oublié à ton sujet.";
                     actionConfirmation = result;
                 }
                 toolResults.push({
