@@ -40,21 +40,31 @@ const HISTORY_LIMIT = 10;
  * Ne fait rien si aucun rôle n'est configuré ou si l'auteur n'a pas ce rôle.
  */
 export const aiReply = async (message) => {
+    // Mode « ouvert à tous » : si activé, tout le monde peut parler à BeBot
+    // (on saute le contrôle du rôle). Sinon, accès réservé au rôle configuré.
+    const openToAll = process.env.BEBOT_OPEN_TO_ALL?.toUpperCase() === 'ON';
     const roleId = process.env.BEBOT_AI_ROLE_ID;
 
-    // Rôle non configuré ou message hors serveur (DM) → on ignore
-    if (!roleId || !message.member) {
+    // Message hors serveur (DM) → on ignore
+    if (!message.member) {
         return;
     }
 
-    // Membre sans le rôle requis → réaction discrète, pas de réponse IA
-    if (!message.member.roles.cache.has(roleId)) {
-        try {
-            await message.react('🔒');
-        } catch (error) {
-            console.error('Erreur réaction BeBot :', error);
+    // Mode restreint : on applique le contrôle du rôle
+    if (!openToAll) {
+        // Rôle non configuré → on ignore
+        if (!roleId) {
+            return;
         }
-        return;
+        // Membre sans le rôle requis → réaction discrète, pas de réponse IA
+        if (!message.member.roles.cache.has(roleId)) {
+            try {
+                await message.react('🔒');
+            } catch (error) {
+                console.error('Erreur réaction BeBot :', error);
+            }
+            return;
+        }
     }
 
     try {
