@@ -109,6 +109,34 @@ async function fetchMoreMessages(message, requestedLimit) {
 }
 
 /**
+ * Découpe un texte en morceaux de 2000 caractères max (limite Discord),
+ * en coupant de préférence sur les sauts de ligne.
+ */
+function splitMessage(text, max = 2000) {
+    if (text.length <= max) return [text];
+    const chunks = [];
+    let current = '';
+    for (const line of text.split('\n')) {
+        if (current.length + line.length + 1 > max) {
+            if (current) chunks.push(current);
+            if (line.length > max) {
+                // ligne unique trop longue : découpage brut
+                for (let i = 0; i < line.length; i += max) {
+                    chunks.push(line.slice(i, i + max));
+                }
+                current = '';
+            } else {
+                current = line;
+            }
+        } else {
+            current = current ? current + '\n' + line : line;
+        }
+    }
+    if (current) chunks.push(current);
+    return chunks;
+}
+
+/**
  * Répond via l'IA lorsqu'un membre autorisé mentionne le bot.
  * Ne fait rien si aucun rôle n'est configuré ou si l'auteur n'a pas ce rôle.
  */
@@ -196,7 +224,9 @@ export const aiReply = async (message) => {
             ...(tools && { tools }),
         });
 
-        // Claude peut demander à exécuter un outil : on boucle (limite de sécurité)
+        // Claude peut demander à exécuter un outil : on boucle (limite de sécurité).
+        // actionConfirmation garantit un retour même si le modèle ne conclut pas par du texte.
+        let actionConfirmation = null;
         let turns = 0;
         while (response.stop_reason === 'tool_use' && turns < 5) {
             turns++;
@@ -213,6 +243,7 @@ export const aiReply = async (message) => {
                     result = enabled
                         ? "Fait : l'accès est maintenant ouvert à tout le monde."
                         : "Fait : l'accès est de nouveau réservé aux membres autorisés.";
+                    actionConfirmation = result;
                 }
                 toolResults.push({
                     type: 'tool_result',
@@ -235,13 +266,26 @@ export const aiReply = async (message) => {
             .filter((block) => block.type === 'text')
             .map((block) => block.text)
             .join('')
-            .trim()
-            .slice(0, 2000);
+            .trim();
 
-        if (reply) {
-            await message.reply({ content: reply });
+        // Si le modèle n'a rien dit mais qu'une action a eu lieu, on confirme quand même.
+        const finalText = reply || actionConfirmation;
+
+        if (finalText) {
+            const chunks = splitMessage(finalText);
+            for (let i = 0; i < chunks.length; i++) {
+                if (i === 0) await message.reply({ content: chunks[i] });
+                else await message.channel.send({ content: chunks[i] });
+            }
         }
     } catch (error) {
         console.error('Erreur BeBot IA :', error);
+        // Erreur visible : on prévient l'utilisateur au lieu d'échouer en silence
+        message
+            .reply({
+                content:
+                    "Désolé, je rencontre un souci technique de mon côté 😵 Réessaie dans un instant.",
+            })
+            .catch(() => {});
     }
 };
