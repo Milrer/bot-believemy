@@ -38,8 +38,18 @@ const HISTORY_LIMIT = 10;
 export const aiReply = async (message) => {
     const roleId = process.env.BEBOT_AI_ROLE_ID;
 
-    // Rôle non configuré, ou auteur sans le rôle requis (ou message en DM) → on ignore
-    if (!roleId || !message.member?.roles.cache.has(roleId)) {
+    // Rôle non configuré ou message hors serveur (DM) → on ignore
+    if (!roleId || !message.member) {
+        return;
+    }
+
+    // Membre sans le rôle requis → réaction discrète, pas de réponse IA
+    if (!message.member.roles.cache.has(roleId)) {
+        try {
+            await message.react('🔒');
+        } catch (error) {
+            console.error('Erreur réaction BeBot :', error);
+        }
         return;
     }
 
