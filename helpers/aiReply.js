@@ -1,10 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk';
+import fetch from 'node-fetch';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+// Node < 18 n'expose pas de fetch global : on fournit node-fetch au SDK.
+// Sur Node 18+, on laisse le SDK utiliser le fetch natif.
 const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
+    ...(globalThis.fetch ? {} : { fetch }),
 });
 
 // Modèle Anthropic utilisé pour les réponses (Claude Haiku 4.5)
