@@ -69,6 +69,27 @@ const journaliser = async (client, ligne) => {
     }
 };
 
+/**
+ * Annonce au démarrage l'état du suivi dans le salon de journal.
+ *
+ * Sans elle, rien ne distingue un bot qui écoute d'un bot qui n'a pas accès au
+ * salon : les messages versés sont rares, et on pourrait attendre des heures
+ * une ligne qui ne viendrait jamais.
+ */
+export const annoncerDemarrage = async (client) => {
+    const suivis = listeSalons('DISCORD_TRACKED_CHANNELS');
+    const portee = suivis.includes('*')
+        ? 'tous les salons'
+        : `${suivis.length} salon(s)`;
+    const ignores = listeSalons('DISCORD_IGNORED_CHANNELS').length;
+
+    await journaliser(
+        client,
+        `🟢 Suivi pédagogique actif : ${portee}${ignores ? `, ${ignores} exclu(s)` : ''}. ` +
+            `Les messages des apprenants reconnus partent dans leur dossier Believemy.`
+    );
+};
+
 export const trackMessage = async (message) => {
     try {
         // Les messages privés n'arrivent jamais ici, et c'est voulu : un bot
