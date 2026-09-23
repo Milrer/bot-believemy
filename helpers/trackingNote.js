@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import axios from 'axios';
+import { journaliser } from './logChannel.js';
 
 dotenv.config();
 
@@ -42,31 +43,6 @@ const salonSuivi = (channelId) => {
         return false;
     }
     return suivis.includes('*') || suivis.includes(channelId);
-};
-
-/**
- * Écrit une ligne dans le salon de journal, quand il est configuré.
- *
- * On n'y envoie que ce qui mérite un coup d'œil : un message versé au dossier,
- * ou une panne. Les auteurs non reconnus, qui sont la majorité sur un serveur
- * ouvert, resteraient en console : les afficher ici noierait le reste.
- */
-const journaliser = async (client, ligne) => {
-    const salonId = (process.env.DISCORD_LOG_CHANNEL || '').trim();
-    if (!salonId) {
-        return;
-    }
-    try {
-        const salon =
-            client.channels.cache.get(salonId) ||
-            (await client.channels.fetch(salonId));
-        if (salon && salon.isTextBased()) {
-            await salon.send(ligne);
-        }
-    } catch (error) {
-        // Un journal injoignable ne doit jamais faire échouer un suivi.
-        console.error('[suivi] journal Discord indisponible :', error.message);
-    }
 };
 
 /**

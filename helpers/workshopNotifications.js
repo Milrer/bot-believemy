@@ -5,6 +5,7 @@ import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
 import frLocale from 'dayjs/locale/fr.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { journaliser } from './logChannel.js';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -211,6 +212,30 @@ function createReplayEmbed(workshop, client) {
  * Envoie une notification pour un atelier dans le bon channel
  */
 async function sendWorkshopNotification(client, workshop, createEmbedFn, type) {
+    // UN ATELIER SANS INTERVENANT NE SE DIFFUSE PAS. Annoncer une séance que
+    // personne n'anime donne à la communauté un rendez-vous sans visage, et
+    // c'est de toute façon le signe d'une fiche incomplète côté plateforme.
+    //
+    // C'était aussi une panne : les trois embeds mettent les intervenants dans
+    // un champ, une liste vide produit une valeur vide, et Discord refuse le
+    // message entier. L'atelier n'étant jamais marqué comme diffusé, il
+    // revenait à chaque passage du cron, d'où des centaines d'erreurs
+    // identiques dans les journaux pour une seule fiche mal remplie.
+    //
+    // On le dit dans le salon de journal plutôt qu'en console : refuser en
+    // silence remplacerait une erreur bruyante par un rendez-vous qui
+    // n'arrive jamais, sans que personne le sache.
+    if (!workshop.speakers || workshop.speakers.length === 0) {
+        console.error(
+            `[WorkshopNotifications] Atelier ${workshop.id} non diffusé : aucun intervenant renseigné.`
+        );
+        await journaliser(
+            client,
+            `⚠️ Atelier « ${workshop.title} » non diffusé : aucun intervenant n'est renseigné sur sa fiche.`
+        );
+        return null;
+    }
+
     const { channelId, roleId } = getWorkshopChannelAndRole(workshop);
     const roleMention = `<@&${roleId}>`;
 
