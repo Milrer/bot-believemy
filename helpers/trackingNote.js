@@ -72,11 +72,15 @@ export const trackMessage = async (message) => {
             { headers: { 'Content-Type': 'application/json' }, timeout: 8000 }
         );
 
-        // Un auteur non reconnu est le cas courant sur un serveur ouvert :
-        // on ne le signale qu'en debug, jamais dans un salon.
-        if (data && data.matched === false && process.env.DEBUG_TRACKING) {
+        // Un auteur non reconnu est le cas courant sur un serveur ouvert : on
+        // ne le signale qu'en debug, jamais dans un salon. Le succès s'y
+        // affiche aussi, le temps de vérifier que la chaîne fonctionne de bout
+        // en bout après une mise en service.
+        if (process.env.DEBUG_TRACKING && data) {
             console.log(
-                `[suivi] auteur non reconnu : ${message.author.username} (${message.author.id})`
+                data.matched
+                    ? `[suivi] #${message.channel.name} : message de ${message.author.username} versé au dossier ${data.studentId} (note ${data.noteId}, par ${data.matchedBy})`
+                    : `[suivi] #${message.channel.name} : ${message.author.username} (${message.author.id}) n'est pas un apprenant connu`
             );
         }
     } catch (error) {
