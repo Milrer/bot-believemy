@@ -36,7 +36,37 @@ const salonSuivi = (channelId) => {
     if (listeSalons('DISCORD_IGNORED_CHANNELS').includes(channelId)) {
         return false;
     }
+    // Le salon de journal se raconterait lui-même : on l'écarte toujours,
+    // sans avoir à penser à l'ajouter aux exceptions.
+    if (channelId === (process.env.DISCORD_LOG_CHANNEL || '').trim()) {
+        return false;
+    }
     return suivis.includes('*') || suivis.includes(channelId);
+};
+
+/**
+ * Écrit une ligne dans le salon de journal, quand il est configuré.
+ *
+ * On n'y envoie que ce qui mérite un coup d'œil : un message versé au dossier,
+ * ou une panne. Les auteurs non reconnus, qui sont la majorité sur un serveur
+ * ouvert, resteraient en console : les afficher ici noierait le reste.
+ */
+const journaliser = async (client, ligne) => {
+    const salonId = (process.env.DISCORD_LOG_CHANNEL || '').trim();
+    if (!salonId) {
+        return;
+    }
+    try {
+        const salon =
+            client.channels.cache.get(salonId) ||
+            (await client.channels.fetch(salonId));
+        if (salon && salon.isTextBased()) {
+            await salon.send(ligne);
+        }
+    } catch (error) {
+        // Un journal injoignable ne doit jamais faire échouer un suivi.
+        console.error('[suivi] journal Discord indisponible :', error.message);
+    }
 };
 
 export const trackMessage = async (message) => {
@@ -72,18 +102,31 @@ export const trackMessage = async (message) => {
             { headers: { 'Content-Type': 'application/json' }, timeout: 8000 }
         );
 
-        // Un auteur non reconnu est le cas courant sur un serveur ouvert : on
-        // ne le signale qu'en debug, jamais dans un salon. Le succès s'y
-        // affiche aussi, le temps de vérifier que la chaîne fonctionne de bout
-        // en bout après une mise en service.
-        if (process.env.DEBUG_TRACKING && data) {
+        if (!data) {
+            return;
+        }
+
+        if (data.matched) {
+            const trace = `#${message.channel.name} : message de ${message.author.username} versé au dossier ${data.studentId} (note ${data.noteId}, reconnu par ${data.matchedBy})`;
+            if (process.env.DEBUG_TRACKING) {
+                console.log(`[suivi] ${trace}`);
+            }
+            await journaliser(message.client, `📥 ${trace}`);
+            return;
+        }
+
+        // Un auteur non reconnu est le cas courant sur un serveur ouvert : il
+        // reste en console, jamais dans le salon de journal.
+        if (process.env.DEBUG_TRACKING) {
             console.log(
-                data.matched
-                    ? `[suivi] #${message.channel.name} : message de ${message.author.username} versé au dossier ${data.studentId} (note ${data.noteId}, par ${data.matchedBy})`
-                    : `[suivi] #${message.channel.name} : ${message.author.username} (${message.author.id}) n'est pas un apprenant connu`
+                `[suivi] #${message.channel.name} : ${message.author.username} (${message.author.id}) n'est pas un apprenant connu`
             );
         }
     } catch (error) {
         console.error('[suivi] message non versé au dossier :', error.message);
+        await journaliser(
+            message.client,
+            `⚠️ Message de ${message.author?.username ?? 'inconnu'} dans #${message.channel?.name ?? '?'} non versé au dossier : ${error.message}`
+        );
     }
 };
