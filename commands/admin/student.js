@@ -31,10 +31,19 @@ export default {
             console.log(interaction.user.username);
 
             // axios
+            // Depuis 2023, Discord a séparé le handle (toujours en minuscules)
+            // du nom affiché, et les pseudos enregistrés avant cette date ne
+            // correspondent plus au seul `username`. On envoie donc tout ce
+            // qu'on a, identifiant compris : c'est lui qui répare le lien
+            // durablement côté Believemy.
             const rocket = await axios.post(
                 'https://believemy.com/api/webhooks/check-student',
                 {
                     pseudo: interaction.user.username,
+                    discordId: interaction.user.id,
+                    username: interaction.user.username,
+                    globalName: interaction.user.globalName || null,
+                    displayName: interaction.member?.displayName || null,
                     token: process.env.TOKEN_BELIEVEMY,
                 },
                 {

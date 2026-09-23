@@ -1,6 +1,7 @@
 import { Events } from 'discord.js';
 import { blacklist } from '../../blacklist/blacklist.js';
 import { aiReply } from '../../helpers/aiReply.js';
+import { trackMessage } from '../../helpers/trackingNote.js';
 
 export default {
     name: Events.MessageCreate,
@@ -25,6 +26,10 @@ export default {
                     setTimeout(() => msg.delete(), 5000);
                 });
         }
+
+        // Le message part au dossier de l'apprenant sans attendre : le suivi
+        // ne doit ni ralentir ni empêcher la réponse du bot.
+        trackMessage(message);
 
         // Réponse IA quand un membre autorisé mentionne le bot
         if (message.mentions.users.has(message.client.user.id)) {
