@@ -6,19 +6,38 @@ dotenv.config();
 /**
  * Verse au dossier Believemy un message posté dans un salon suivi.
  *
- * Seuls les salons listés dans DISCORD_TRACKED_CHANNELS sont versés : le
- * dossier d'un apprenant n'a pas à recevoir tout le serveur, et beaucoup de
- * salons n'ont rien de pédagogique.
+ * DISCORD_TRACKED_CHANNELS accepte deux formes :
+ *   - une liste d'identifiants de salons séparés par des virgules ;
+ *   - `*` pour suivre tout le serveur, sans avoir à tenir la liste à jour
+ *     quand un salon est créé.
+ *
+ * DISCORD_IGNORED_CHANNELS retire ensuite les salons qu'on ne veut pas voir
+ * arriver dans un dossier d'apprenant. C'est la bonne façon de trier quand on
+ * suit tout : on nomme les exceptions, pas la règle.
+ *
+ * Vide, la variable ne suit rien : aucun message ne descend dans un dossier
+ * sans un choix explicite.
  *
  * Rien ici ne doit jamais interrompre le bot : un back indisponible, un auteur
  * inconnu ou un message vide se terminent en silence.
  */
 
-const trackedChannels = () =>
-    (process.env.DISCORD_TRACKED_CHANNELS || '')
+const listeSalons = (variable) =>
+    (process.env[variable] || '')
         .split(',')
         .map((id) => id.trim())
         .filter(Boolean);
+
+const salonSuivi = (channelId) => {
+    const suivis = listeSalons('DISCORD_TRACKED_CHANNELS');
+    if (suivis.length === 0) {
+        return false;
+    }
+    if (listeSalons('DISCORD_IGNORED_CHANNELS').includes(channelId)) {
+        return false;
+    }
+    return suivis.includes('*') || suivis.includes(channelId);
+};
 
 export const trackMessage = async (message) => {
     try {
@@ -28,8 +47,7 @@ export const trackMessage = async (message) => {
             return;
         }
 
-        const salons = trackedChannels();
-        if (salons.length === 0 || !salons.includes(message.channel.id)) {
+        if (!salonSuivi(message.channel.id)) {
             return;
         }
 
