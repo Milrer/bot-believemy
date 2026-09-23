@@ -12,16 +12,19 @@ const PARIS_TZ = 'Europe/Paris';
 /**
  * Messages affichés en statut, regroupés par créneau horaire (heure de Paris).
  *
- * L'effet recherché tient en une phrase : celui qui lit doit se dire « ah
- * ouais, il a même pensé à ça ». Donc des micro-rappels concrets de la vie
- * d'un solopreneur, le genre qu'on oublie tous, jamais des phrases de
- * développement personnel. « Quelqu'un te doit de l'argent ? » vaut mille
- * fois « une marche à la fois ».
+ * Un seul registre : la micro-action immédiate, gratuite, qui sort de l'écran.
+ * « Lève-toi 5 minutes », « Contacte un de tes utilisateurs », « Explique ton
+ * problème à voix haute ». Quelque chose qu'on peut faire dans les trente
+ * secondes et qu'on ne fait jamais.
+ *
+ * Ce qui n'a rien à faire ici : les conseils de productivité (« trois tâches,
+ * pas dix »), les rappels administratifs (« relance ton devis ») et tout ce qui
+ * ressemble à du développement personnel. C'est bateau, personne ne le lit.
  *
  * Les règles, à relire avant d'ajouter une ligne :
  *   - 40 caractères maximum, sans emoji : un statut se lit d'un coup d'oeil ;
- *   - BeBot ne s'invente jamais de vécu, il rappelle, il ne raconte pas ;
- *   - on parle à quelqu'un qui construit son activité, pas à un développeur ;
+ *   - une action, pas une pensée ;
+ *   - BeBot ne s'invente pas de vécu et ne prétend pas voir ce qui se passe ;
  *   - il tutoie, parce que c'est lui qui parle et que son avatar est visible.
  *
  * Un message par jour est choisi dans la liste du créneau courant.
@@ -29,41 +32,43 @@ const PARIS_TZ = 'Europe/Paris';
 const MESSAGES = {
     // 00h - 06h
     nuit: [
-        'Sauvegarde avant de fermer',
-        'Il est tard. Vraiment tard',
-        'Note ton idée, tu vas l\'oublier',
-        'Un dernier truc, puis au lit',
-        'Demain sera plus simple reposé',
-        'Mets un réveil, au cas où',
+        'Va dormir. Ça attendra demain',
+        'Note ton idée, puis dors',
+        "Bois un verre d'eau",
+        "Éteins l'écran cinq minutes",
+        'Étire tes épaules',
+        'Regarde au loin vingt secondes',
     ],
     // 06h - 12h
     matin: [
-        'Commence par le plus embêtant',
-        'Trois tâches. Pas dix',
-        'Le mail que tu évites depuis mardi',
-        'Quelqu\'un te doit de l\'argent ?',
-        'Bois de l\'eau avant le café',
-        'Ferme les onglets d\'hier',
+        "Bois un verre d'eau",
+        'Contacte un de tes utilisateurs',
+        "Sors prendre l'air cinq minutes",
+        "Appelle plutôt que d'écrire",
+        'Demande un avis avant de finir',
+        'Écris ce qui te bloque en une phrase',
     ],
     // 12h - 18h
     apresMidi: [
-        'Lève-toi cinq minutes',
-        'Relance ton devis en attente',
-        'Finis avant de commencer autre chose',
+        'Lève-toi 5 minutes',
         'Explique ton problème à voix haute',
-        'Demande de l\'aide. C\'est gratuit',
-        'Ton écran est trop près',
+        "Demande de l'aide, c'est gratuit",
+        'Change de pièce cinq minutes',
+        "Montre ton travail à quelqu'un",
+        'Regarde au loin vingt secondes',
     ],
     // 18h - 00h
     soir: [
-        'Trente minutes. Pas plus',
-        'Ton nom de domaine expire quand ?',
-        'Note demain, puis coupe',
-        'Une chose finie, c\'est déjà ça',
-        'Coupe vraiment. Pas juste l\'écran',
-        'Sauvegarde ton travail du jour',
+        'Sors marcher dix minutes',
+        'Mange un vrai truc',
+        "Dis merci à quelqu'un",
+        "Relis à voix haute avant d'envoyer",
+        'Ferme tout sauf un onglet',
+        'Respire un coup',
     ],
-};/**
+};
+
+/**
  * Retourne la clé du créneau correspondant à une heure (0-23).
  */
 function creneauActuel(heure) {
