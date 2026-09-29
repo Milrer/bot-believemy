@@ -72,6 +72,45 @@ export default {
                 }
             );
 
+            // Accélérateur Python : son propre rôle, son salon de suivi, et pas
+            // d'annonce publique tant qu'il n'a pas de salon commun.
+            const pythonRoleId = process.env.PYTHON_STUDENT_ROLE_ID;
+            if (
+                pythonRoleId &&
+                rocket.status == 200 &&
+                rocket.data.IS_A_PYTHON_STUDENT &&
+                !rocket.data.IS_A_ROCKET_STUDENT
+            ) {
+                const dejaPython = member.roles.cache.has(pythonRoleId);
+                if (!dejaPython) {
+                    await member.roles.add(pythonRoleId);
+                    await member.roles.add(openCampusRoleId);
+                }
+                await salonDeSuivi(member, rocket.data);
+                await interaction.reply({
+                    embeds: [
+                        {
+                            title: dejaPython
+                                ? '🔥 Vous êtes déja chez nous'
+                                : '✅ Accès autorisé',
+                            color: 0x57f287,
+                            description: dejaPython
+                                ? 'Votre salon de suivi vous attend dans la catégorie « Suivi individuel ».'
+                                : "Bienvenue dans l'Accélérateur Python ! Votre salon de suivi vous attend dans la catégorie « Suivi individuel ».",
+                            footer: {
+                                text: `BeBot @${date.getFullYear()} | believemy.com`,
+                                icon_url: interaction.user.displayAvatarURL({
+                                    dynamic: true,
+                                }),
+                            },
+                        },
+                    ],
+                    ephemeral: true,
+                });
+                await setTimeout(15000);
+                return await interaction.deleteReply();
+            }
+
             if (member.roles.cache.has(studentRoleId)) {
                 await salonDeSuivi(member, rocket.data);
                 const studentValidated = {
