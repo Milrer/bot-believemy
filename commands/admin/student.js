@@ -2,6 +2,8 @@ import { setTimeout } from 'timers/promises';
 import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { embedError } from '../../helpers/errorEmbed.js';
+import { ouvrirSalonSuivi } from '../../helpers/followUpChannels.js';
+import { journaliser } from '../../helpers/logChannel.js';
 import OpenAI from 'openai';
 
 dotenv.config();
@@ -9,6 +11,22 @@ dotenv.config();
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
+
+/**
+ * Ouvre le salon de suivi individuel d'un apprenant vérifié. Un échec ici ne
+ * doit jamais priver l'apprenant de son accès : il est noté, et on continue.
+ */
+const salonDeSuivi = async (member) => {
+    try {
+        await ouvrirSalonSuivi(member);
+    } catch (error) {
+        console.error('[suivi] salon non ouvert :', error.message);
+        await journaliser(
+            member.client,
+            `⚠️ Salon de suivi non ouvert pour ${member.user.username} : ${error.message}`
+        );
+    }
+};
 
 export default {
     cooldown: 60,
@@ -52,6 +70,7 @@ export default {
             );
 
             if (member.roles.cache.has(studentRoleId)) {
+                await salonDeSuivi(member);
                 const studentValidated = {
                     title: '🔥 Vous êtes déja chez nous',
                     color: 0x57f287,
@@ -96,6 +115,7 @@ export default {
                 } else {
                     await member.roles.add(studentRoleId);
                     await member.roles.add(openCampusRoleId);
+                    await salonDeSuivi(member);
                     const studentAuthorized = {
                         title: '✅ Accès autorisé',
                         color: 0x57f287,

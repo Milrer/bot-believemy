@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import axios from 'axios';
 import { journaliser } from './logChannel.js';
+import { proprietaireDuSalon } from './followUpChannels.js';
 
 dotenv.config();
 
@@ -84,6 +85,11 @@ export const trackMessage = async (message) => {
             return;
         }
 
+        // Dans un salon de suivi individuel, la conversation appartient à
+        // l'apprenant du salon : les réponses de Louis-Nicolas vont dans son
+        // dossier, comme ses propres messages.
+        const proprietaire = proprietaireDuSalon(message.channel);
+
         const { data } = await axios.post(
             'https://believemy.com/api/webhooks/discord-note',
             {
@@ -95,6 +101,14 @@ export const trackMessage = async (message) => {
                 content: contenu,
                 channel: message.channel.name,
                 sentAt: message.createdAt.toISOString(),
+                ...(proprietaire && {
+                    studentDiscordId: proprietaire,
+                    authorName:
+                        message.member?.displayName ||
+                        message.author.globalName ||
+                        message.author.username,
+                    messageId: message.id,
+                }),
             },
             { headers: { 'Content-Type': 'application/json' }, timeout: 8000 }
         );
