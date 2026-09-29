@@ -114,7 +114,10 @@ export const salonDe = async (guild, memberId) => {
  * Sans effet sur un salon existant : on peut l'appeler autant de fois qu'on
  * veut.
  */
-export const ouvrirSalonSuivi = async (member, { inviter = true } = {}) => {
+export const ouvrirSalonSuivi = async (
+    member,
+    { inviter = true, prenom = '', nom = '' } = {}
+) => {
     const guild = member.guild;
     const existant = await salonDe(guild, member.id);
     if (existant) {
@@ -145,19 +148,26 @@ export const ouvrirSalonSuivi = async (member, { inviter = true } = {}) => {
         });
     }
 
+    // Le salon porte le prénom Believemy de l'apprenant quand on le connaît :
+    // le pseudo Discord (« Ghost », « Azkers ») ne dit pas de qui il s'agit.
     // Deux apprenants peuvent porter le même prénom : si le nom est déjà pris
-    // dans la catégorie, on y accole le pseudo Discord, qui lui est unique.
-    // Le rattachement au dossier ne dépend jamais du nom, seulement du sujet.
-    let nom = `suivi-${etiquette(member.displayName)}`;
-    const pris = guild.channels.cache.some(
-        (c) => c.parentId === parent?.id && c.name === nom
-    );
-    if (pris) {
-        nom = `suivi-${etiquette(member.displayName)}-${etiquette(member.user.username)}`;
-    }
+    // dans la catégorie, on y accole le nom de famille, puis le pseudo
+    // Discord, qui lui est unique. Le rattachement au dossier ne dépend jamais
+    // du nom du salon, seulement de son sujet.
+    const libre = (candidat) =>
+        !guild.channels.cache.some(
+            (c) => c.parentId === parent?.id && c.name === candidat
+        );
+    const base = `suivi-${etiquette(prenom || member.displayName)}`;
+    const candidats = [
+        base,
+        nom ? `${base}-${etiquette(nom)}` : null,
+        `${base}-${etiquette(member.user.username)}`,
+    ].filter(Boolean);
+    const nomDuSalon = candidats.find(libre) || candidats[candidats.length - 1];
 
     const salon = await guild.channels.create({
-        name: nom,
+        name: nomDuSalon,
         type: ChannelType.GuildText,
         parent: parent?.id,
         topic: `${MARQUEUR} · ${member.id}`,

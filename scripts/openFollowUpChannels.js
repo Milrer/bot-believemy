@@ -8,17 +8,25 @@ dotenv.config();
  * Ouvre d'un coup les salons de suivi des apprenants déjà sur le serveur.
  * Les nouveaux, eux, reçoivent le leur au passage de /verify.
  *
- *   node scripts/openFollowUpChannels.js 123,456,789        → simulation
- *   node scripts/openFollowUpChannels.js 123,456,789 --go   → ouverture
+ *   node scripts/openFollowUpChannels.js "123=Prénom Nom,456=Prénom Nom"        → simulation
+ *   node scripts/openFollowUpChannels.js "123=Prénom Nom,456=Prénom Nom" --go   → ouverture
+ *
+ * Le nom, facultatif, est celui du compte Believemy : il nomme le salon.
  *
  * Sans --go, rien n'est créé ni envoyé : le script dit seulement ce qu'il
  * ferait. Un salon déjà ouvert n'est jamais recréé.
  */
 
-const ids = (process.argv[2] || '')
+const entrees = (process.argv[2] || '')
     .split(',')
-    .map((id) => id.trim())
-    .filter(Boolean);
+    .map((e) => e.trim())
+    .filter(Boolean)
+    .map((e) => {
+        const [id, ...reste] = e.split('=');
+        const [prenom = '', ...nom] = reste.join('=').trim().split(/\s+/);
+        return { id: id.trim(), prenom, nom: nom.join(' ') };
+    });
+const ids = entrees.map((e) => e.id);
 const pourDeVrai = process.argv.includes('--go');
 
 if (ids.length === 0) {
@@ -34,7 +42,7 @@ client.once('ready', async () => {
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
     console.log(pourDeVrai ? 'Ouverture des salons :' : 'Simulation (ajouter --go pour ouvrir) :');
 
-    for (const id of ids) {
+    for (const { id, prenom, nom } of entrees) {
         const member = await guild.members.fetch(id).catch(() => null);
         if (!member) {
             console.log(`  ${id} : absent du serveur, ignoré`);
@@ -46,11 +54,11 @@ client.once('ready', async () => {
             continue;
         }
         if (!pourDeVrai) {
-            console.log(`  ${member.displayName} : salon à ouvrir`);
+            console.log(`  ${prenom || member.displayName} ${nom} (${member.displayName}) : salon à ouvrir`);
             continue;
         }
         try {
-            const { salon } = await ouvrirSalonSuivi(member);
+            const { salon } = await ouvrirSalonSuivi(member, { prenom, nom });
             console.log(`  ${member.displayName} : ouvert (#${salon.name})`);
         } catch (error) {
             console.log(`  ${member.displayName} : ÉCHEC, ${error.message}`);

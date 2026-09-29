@@ -16,9 +16,12 @@ const openai = new OpenAI({
  * Ouvre le salon de suivi individuel d'un apprenant vérifié. Un échec ici ne
  * doit jamais priver l'apprenant de son accès : il est noté, et on continue.
  */
-const salonDeSuivi = async (member) => {
+const salonDeSuivi = async (member, data = {}) => {
     try {
-        await ouvrirSalonSuivi(member);
+        await ouvrirSalonSuivi(member, {
+            prenom: data.FIRST_NAME || '',
+            nom: data.LAST_NAME || '',
+        });
     } catch (error) {
         console.error('[suivi] salon non ouvert :', error.message);
         await journaliser(
@@ -70,7 +73,7 @@ export default {
             );
 
             if (member.roles.cache.has(studentRoleId)) {
-                await salonDeSuivi(member);
+                await salonDeSuivi(member, rocket.data);
                 const studentValidated = {
                     title: '🔥 Vous êtes déja chez nous',
                     color: 0x57f287,
@@ -115,7 +118,7 @@ export default {
                 } else {
                     await member.roles.add(studentRoleId);
                     await member.roles.add(openCampusRoleId);
-                    await salonDeSuivi(member);
+                    await salonDeSuivi(member, data);
                     const studentAuthorized = {
                         title: '✅ Accès autorisé',
                         color: 0x57f287,
