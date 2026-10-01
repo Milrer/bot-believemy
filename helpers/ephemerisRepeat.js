@@ -16,6 +16,7 @@ import * as dotenv from 'dotenv';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LAST_COVER_PATH = path.join(__dirname, '..', 'data', 'lastCover.json');
+const COVER_FILE_NAME = 'cover.jpg';
 
 dotenv.config();
 dayjs.locale(frLocale);
@@ -65,13 +66,28 @@ export async function createEphermerisMessage(client) {
     }
 
     const embeds = [];
+    const files = [];
 
-    // Si la couverture a changé, l'afficher en premier (pleine largeur)
+    // Si la couverture a changé, l'afficher en premier (pleine largeur).
+    // L'image est jointe au message : Discord n'a pas à aller la chercher
+    // lui-même, ce qui laissait un encart vide quand il n'y arrivait pas.
     if (coverUrl) {
-        embeds.push({
-            color: 0x613bdb,
-            image: { url: coverUrl },
-        });
+        try {
+            const response = await axios.get(coverUrl, {
+                responseType: 'arraybuffer',
+                timeout: 30000,
+            });
+            files.push({
+                attachment: Buffer.from(response.data),
+                name: COVER_FILE_NAME,
+            });
+            embeds.push({
+                color: 0x613bdb,
+                image: { url: `attachment://${COVER_FILE_NAME}` },
+            });
+        } catch (error) {
+            console.error(`[Ephemeris] Erreur téléchargement couverture: ${error.message}`);
+        }
     }
 
     // Embed principal avec la saint du jour
@@ -93,7 +109,7 @@ export async function createEphermerisMessage(client) {
         },
     });
 
-    channel.send({ embeds });
+    channel.send({ embeds, files });
 }
 
 export function ephemerisRepeat(client) {
