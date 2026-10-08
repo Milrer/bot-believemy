@@ -33,8 +33,8 @@ const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Modèle Anthropic utilisé pour les réponses (Claude Haiku 4.5)
-const MODEL = 'claude-haiku-4-5';
+// Modèle Anthropic utilisé pour les réponses (Claude Haiku 5.5)
+const MODEL = 'claude-haiku-5-5';
 
 const SYSTEM_PROMPT = `Tu es BeBot, l'assistant IA de la communauté Discord de Believemy, la plateforme française qui apprend à ses membres le code, le no-code et l'IA, et plus largement à devenir solopreneur.
 Tu es chaleureux, bienveillant et serviable, et tu tutoies les membres.
@@ -362,7 +362,9 @@ export const aiReply = async (message) => {
         const callClaude = async () => {
             const r = await anthropic.messages.create({
                 model: MODEL,
-                max_tokens: 1024,
+                // Haiku 5.5 réfléchit par défaut, dans ce même budget : il faut
+                // de la place pour la réflexion ET pour la réponse.
+                max_tokens: 2048,
                 system,
                 messages,
                 ...(tools && { tools }),

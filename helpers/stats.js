@@ -6,12 +6,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const dataDir = join(__dirname, '..', 'data');
 const statsPath = join(dataDir, 'stats.json');
 
-// Tarifs Claude Haiku 4.5 (USD par million de tokens, sauf web search)
+// Tarifs Claude Haiku 5.5 (USD par million de tokens, sauf web search), pour
+// une requête jusqu'à 100 000 tokens. Les tokens comptés avant la bascule
+// (Haiku 4.5, dix fois plus cher) sont réévalués à ce tarif.
 const PRICE = {
-    input: 1.0,
-    output: 5.0,
-    cacheRead: 0.1,
-    cacheWrite: 1.25,
+    input: 0.1,
+    output: 0.5,
+    cacheRead: 0.01,
+    cacheWrite: 0.125,
     webSearch: 10.0 / 1000, // 10 $ / 1000 recherches
 };
 
@@ -93,6 +95,6 @@ export function formatStats() {
         `• Tokens en entrée : ${nf(stats.inputTokens)} (dont ${nf(stats.cacheReadTokens)} en cache)`,
         `• Tokens en sortie : ${nf(stats.outputTokens)}`,
         `• Recherches web : ${nf(stats.webSearches)}`,
-        `• Coût estimé : ~${estimateCost().toFixed(4)} $ (modèle Claude Haiku 4.5)`,
+        `• Coût estimé : ~${estimateCost().toFixed(4)} $ (modèle Claude Haiku 5.5)`,
     ].join('\n');
 }
