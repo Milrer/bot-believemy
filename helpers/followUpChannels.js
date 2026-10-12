@@ -71,6 +71,15 @@ const lecture = [
     PermissionFlagsBits.EmbedLinks,
 ];
 
+/**
+ * La catégorie où ranger les salons de suivi.
+ *
+ * ON LA RECONNAÎT À CE QU'ELLE CONTIENT, PAS À SON NOM. Une catégorie se
+ * renomme (« 🤝 SUIVI INDIVIDUEL ») : la chercher par son nom exact en
+ * recréait une seconde, vide, à côté de la vraie. Celle qui abrite déjà les
+ * salons de suivi est la bonne, quel que soit le nom qu'elle porte. Le nom ne
+ * sert qu'au tout premier salon, et se compare sans emoji, casse ni accents.
+ */
 const categorie = async (guild) => {
     const configuree = (process.env.DISCORD_FOLLOW_UP_CATEGORY || '').trim();
     if (configuree) {
@@ -80,8 +89,27 @@ const categorie = async (guild) => {
         }
     }
 
+    const salonsParCategorie = new Map();
+    for (const c of guild.channels.cache.values()) {
+        if (c.parentId && proprietaireDuSalon(c)) {
+            salonsParCategorie.set(
+                c.parentId,
+                (salonsParCategorie.get(c.parentId) || 0) + 1
+            );
+        }
+    }
+    const [habitee] = [...salonsParCategorie.entries()].sort(
+        (a, b) => b[1] - a[1]
+    );
+    const occupee = habitee && guild.channels.cache.get(habitee[0]);
+    if (occupee) {
+        return occupee;
+    }
+
     const existante = guild.channels.cache.find(
-        (c) => c.type === ChannelType.GuildCategory && c.name === NOM_CATEGORIE
+        (c) =>
+            c.type === ChannelType.GuildCategory &&
+            etiquette(c.name) === etiquette(NOM_CATEGORIE)
     );
     if (existante) {
         return existante;
