@@ -14,8 +14,8 @@ export default {
       color: 0x613bdb,
       author: {
         name: `${interaction.client.user.username}`,
-        icon_url: "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
-        url: "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
+        icon_url: "https://pub-e7ad803658b0405c87e1ed9e9c18552b.r2.dev/pictures/bebot/bebot-profile.png",
+        url: "https://pub-e7ad803658b0405c87e1ed9e9c18552b.r2.dev/pictures/bebot/bebot-profile.png",
       },
       description: `**Ping du bot**: ${
         botPing.createdTimestamp - interaction.createdTimestamp

@@ -23,8 +23,8 @@ export default {
           author: {
             name: `${interaction.client.user.username}`,
             icon_url:
-              "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
-            url: "https://osakalehusky.com/pictures/bebot/bebot-profile.png",
+              "https://pub-e7ad803658b0405c87e1ed9e9c18552b.r2.dev/pictures/bebot/bebot-profile.png",
+            url: "https://pub-e7ad803658b0405c87e1ed9e9c18552b.r2.dev/pictures/bebot/bebot-profile.png",
           },
           description: `**C'est grâce à eux que BeBot existe aujourd'hui** :\n${collabList
             .map((u) => `\n> ${u.login}`)
